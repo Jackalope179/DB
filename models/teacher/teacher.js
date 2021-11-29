@@ -11,6 +11,8 @@ exports.getAllDeptname = async function() {
 }
 
 exports.editTeacher = async function(teacher) {
+    let str = `UPDATE teacher SET fullName='${teacher.fullName}',phoneNumber='${teacher.phoneNumber}',position='${teacher.position}',join_school_Year='${teacher.join_school_Year}',departmentID='${teacher.departmentID}',schoolEmail='${teacher.schoolEmail}',personalEmail='${teacher.personalEmail}',address='${teacher.address}',salary='${teacher.salary}' WHERE MSGV='${teacher.MSGV}' `
+    console.log(str);
     await connection.awaitQuery(`UPDATE teacher SET fullName='${teacher.fullName}',phoneNumber='${teacher.phoneNumber}',position='${teacher.position}',join_school_Year='${teacher.join_school_Year}',departmentID='${teacher.departmentID}',schoolEmail='${teacher.schoolEmail}',personalEmail='${teacher.personalEmail}',address='${teacher.address}',salary='${teacher.salary}' WHERE MSGV='${teacher.MSGV}' `)
 
 }
