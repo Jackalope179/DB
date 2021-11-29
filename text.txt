@@ -1,0 +1,33 @@
+app.js --> router --> controller --> required model
+INSERT INTO student(MSSV, school_email, fname, midname, lname, phone, training_system, gender, personal_email, MSGV, departmentID, Khoa) VALUES ('${student.MSSV}','${student.school_email}','${student.fname}','${student.midname}','${student.lname}','${student.phone}','${student.training_system}','${student.gender}','${student.personal_email}','${student.MSGV}','${student.departmentID}','${student.Khoa}')
+
+
+
+UPDATE dependent SET MSSV='${dependent.MSSV}',fullName='${dependent.fullName}',phoneNumber='${dependent.phoneNumber}',relation='${dependent.relation}',job='${dependent.job}',address='${dependent.address}' 
+
+
+INSERT INTO dependent VALUES ('${dependent.}','${dependent.}','${dependent.}','${dependent.}','${dependent.}','${dependent.}')
+
+UPDATE address SET houseaddress='${student.houseaddress}',street='${student.street}',ward='${student.ward}',district='${student.district}',city='${student.city}' WHERE MSSV = '${student.MSSV}' AND addressType = 'Hộ khẩu'
+
+
+
+INSERT INTO address VALUES ('${student.MSSV}','${student.houseaddress}','${student.street}','${student.ward}','${student.district}','${student.city}','Hộ khẩu')
+
+UPDATE department SET departmentName='${department.departmentName}',establishYear='${department.establishYear}',MGR='${department.MGR}',studentQuanitty='${department.studentQuanitty}',sumSalary='${department.sumSalary}' WHERE departmentID='${department.departmentID}'
+INSERT INTO department VALUES ('${department.departmentID}','${department.departmentName}','${department.establishYear}','${department.MGR}','${department.studentQuanitty}','${department.sumSalary}')
+
+
+
+SELECT MSGV, fullName, phoneNumber, position, join_school_Year, departmentID, schoolEmail, personalEmail, address, salary, departmentName FROM teacher, department WHERE teacher.departmentID = department.departmentID
+
+
+UPDATE teacher SET fullName='${teacher.fullName}',phoneNumber='${teacher.phoneNumber}',position='${teacher.position}',join_school_Year='${teacher.join_school_Year}',departmentID='${teacher.departmentID}',schoolEmail='${teacher.schoolEmail}',personalEmail='${teacher.personalEmail}',address='${teacher.address}',salary='${teacher.salary}' WHERE MSGV='${teacher.MSGV}'
+INSERT INTO teacher VALUES ('${teacher.MSGV}','${teacher.fullName}','${teacher.phoneNumber}','${teacher.position}','${teacher.join_school_Year}','${teacher.departmentID}','${teacher.schoolEmail}','${teacher.personalEmail}','${teacher.address}','${teacher.salary}')
+
+
+
+
+select#sel-teacher.form-control.select2(name="MSGV", style="width: 100%;")
+    each teacher in teacherList 
+        option(value=teacher.MSGV)=teacher.fullName + '-' + teacher.MSGV

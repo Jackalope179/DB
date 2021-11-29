@@ -1,0 +1,193 @@
+extends ../layout 
+
+block content 
+	section.content-header
+		.container-fluid
+			.row.mb-2
+				.col-sm-6
+					h1 #{title}
+	section.content
+		.container-fluid
+			.row
+				.col-12
+					.card
+						.card-body
+							button.btn.btn-primary.btn-add(data-toggle="modal" data-target="#addTeacherModal", type="button") 
+								i.fas.fa-plus(style = "margin-right: 5px")
+								| Thêm mới
+							table#tab-teacher.table.table-bordered.table-striped
+								thead
+									tr
+										th Thao tác
+										th MSGV
+										th Họ tên
+										th Số điện thoại
+										th Vị trí
+										th Năm vào trường
+										th Khoa
+										th Email trường
+										th Địa chỉ
+										th Lương
+										th Mail cá nhân
+								tbody
+									each teacher in teacherList 
+										tr 
+											td.text-center
+												button.btn-edit(style="margin-right: 5px; border:none", 
+												data-msgv = teacher.MSGV,
+												data-fullname = teacher.fullName, 
+												data-phonenumber = teacher.phoneNumber, 
+												data-position = teacher.position, 
+												data-joinschoolyear = teacher.join_school_Year, 
+												data-departmentid = teacher.departmentID,
+												data-schoolemail = teacher.schoolEmail,
+												data-personalemail = teacher.personalEmail, 
+												data-address = teacher.address, 
+												data-salary = teacher.salary)
+													i.fas.fa-edit(style="color:blue")
+												button.btn-delete(style="margin-right: 5px; border:none", data-msgv = teacher.MSGV)
+													i(style ='color: red').fas.fa-trash 
+											td=teacher.MSGV
+											td=teacher.fullName
+											td=teacher.phoneNumber
+											td=teacher.position
+											td=teacher.join_school_Year
+											td=teacher.departmentID
+											td=teacher.schoolEmail
+											td=teacher.address
+											td=teacher.salary
+											td=teacher.personalEmail
+
+							#addTeacherModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='addTeacherModal' aria-hidden='true')
+								.modal-dialog(role='document')
+									.modal-content
+										.modal-header
+											h5.modal-title Thêm mới
+											button.close(type='button' data-dismiss='modal' aria-label='Close')
+												span(aria-hidden='true') &times;
+										form#form-add-teacher(action="/teacher/teacher/add", method="post")
+											.modal-body
+												.row
+													.col-12
+														.form-group
+															label Mã số Giảng viên
+															input.form-control(type='text' placeholder='MSGV' name='MSGV')
+												.row
+													.col-12
+														.form-group
+															label Họ tên
+															input.form-control(type='text' placeholder='Họ tên' name='fullName')
+												.row
+													.col-12
+														.form-group
+															label Số điện thoại
+															input.form-control(type='text' placeholder='Số điện thoại' name='phoneNumber')
+												.row
+													.col-12 
+														.form-group
+															label Vị trí
+															input.form-control(type='text' placeholder='Vị trí' name='position')
+												.row
+													.col-12
+														.form-group
+															label Năm vào trường
+															input.form-control(type='text' placeholder='Năm vào trường' name='join_school_Year')
+												.row
+													.col-12
+														.form-group
+															label Khoa
+															select#sel-dept.form-control.select2(name="departmentID", style="width: 100%;")
+																each dept in deptList
+																	option(value=dept.departmentID)=dept.departmentName + '-' + dept.departmentID
+															//- input.form-control(type='text' placeholder='Mã Khoa' name='departmentID')
+												.row
+													.col-12
+														.form-group
+															label Email trường
+															input.form-control(type='text' placeholder='Email trường' name='schoolEmail')
+												.row
+													.col-12
+														.form-group
+															label Email cá nhân
+															input.form-control(type='text' placeholder='Email cá nhân' name='personalEmail')
+												//- .row
+												//- 	.col-12 
+												//- 		.form-group
+												//- 			label Mail cá nhân
+												//- 			input.form-control(type='text' placeholder='Mail cá nhân' name='personalEmail')													
+												.row
+													.col-12
+														.form-group
+															label Địa chỉ
+															input.form-control(type='text' placeholder='Địa chỉ' name='address')
+												.row
+													.col-12
+														.form-group
+															label Lương
+															input.form-control(type='text' placeholder='Lương' name='salary')
+											.modal-footer
+												button.btn.btn-secondary(type='button' data-dismiss='modal') Đóng lại
+												button.btn.btn-primary(type='submit') Thêm mới
+							
+							#editTeacherModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='editTeacherModal' aria-hidden='true')
+										.modal-dialog(role='document')
+											.modal-content
+												.modal-header
+													h5.modal-title Chỉnh sửa thông tin giảng viên
+													button.close(type='button' data-dismiss='modal' aria-label='Close')
+														span(aria-hidden='true') &times;
+												form(action="/teacher/teacher/edit", method="post")
+													.modal-body
+														.form-group
+															input(type="hidden", name="MSGV")
+														.form-group
+															label Họ tên
+															input.form-control(type='text', placeholder='Họ tên', name='fullName')
+														.form-group
+															label Số điện thoại
+															input.form-control(type='text', placeholder='Số điện thoại', name='phoneNumber')
+														.form-group
+															label Vị trí
+															input.form-control(type='text', placeholder='Vị trí', name='position')
+														.form-group
+															//- label Năm vào trường
+															input.form-control(type='hidden', placeholder='Năm vào trường', name='join_school_Year')
+														.form-group
+															//- label Mã Khoa
+															input.form-control(type='hidden', placeholder='Mã Khoa', name='departmentID')
+														.form-group
+															label Email trường
+															input.form-control(type='text', placeholder='Email trường', name='schoolEmail')
+														.form-group
+															label Mail cá nhân
+															input.form-control(type='text', placeholder='Mail cá nhân', name='personalEmail')
+														.form-group
+															label Địa chỉ
+															input.form-control(type='text', placeholder='Địa chỉ', name='address')
+														.form-group
+															label Lương
+															input.form-control(type='text', placeholder='Lương', name='salary')
+														
+													.modal-footer
+														button.btn.btn-secondary(type='button' data-dismiss='modal') Đóng lại
+														button.btn.btn-primary(type='submit') Cập nhật
+
+							#deleteTeacherModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='deleteFacultyModal' aria-hidden='true')
+								.modal-dialog(role='document')
+									.modal-content.bg-danger
+										.modal-header
+											h5.modal-title Xóa
+											button.close(type='button' data-dismiss='modal' aria-label='Close')
+												span(aria-hidden='true') &times;
+										form(action="/teacher/teacher/delete", method="post")
+											.modal-body
+												input(type="hidden", name="MSGV")
+												p Bạn có chắc chắn muốn xóa giảng viên này không ?
+											.modal-footer
+												button.btn.btn-outline-light(type='button' data-dismiss='modal') Đóng lại
+												button.btn.btn-outline-light(type='submit') Xác nhận
+
+
+
+block script 
+	script(src="/javascripts/teacher/teacher.js") 

@@ -1,0 +1,142 @@
+extends ../layout 
+
+block content 
+	section.content-header
+		.container-fluid
+			.row.mb-2
+				.col-sm-6
+					h1 #{title}
+	section.content
+		.container-fluid
+			.row
+				.col-12
+					.card
+						.card-body
+							button.btn.btn-primary.btn-add(data-toggle="modal" data-target="#addDependentModal", type="button") 
+								i.fas.fa-plus(style = "margin-right: 5px")
+								| Thêm mới
+							table#tab-student.table.table-bordered.table-striped
+								thead
+									tr
+										th MSSV
+										th Tên
+										th Số điện thoại
+										th Quan hệ
+										th Nghề nghiệp
+										th Địa chỉ
+										th Thao tác
+										
+								tbody
+									each dependent in dependentList 
+										tr 
+											td=dependent.MSSV
+											td=dependent.fullName
+											td=dependent.phoneNumber
+											td=dependent.relation
+											td=dependent.job
+											td=dependent.address
+											td.text-center
+												button.btn-edit(style="margin-right: 5px; border:none", 
+												data-mssv = dependent.MSSV,
+												data-fullname = dependent.fullName, 
+												data-phonenumber = dependent.phoneNumber, 
+												data-relation = dependent.relation, 
+												data-job = dependent.job, 
+												data-address = dependent.address)
+													i.fas.fa-edit(style="color:blue")
+												button.btn-delete(style="margin-right: 5px; border:none", data-mssv = dependent.MSSV, data-fullname = dependent.fullName)
+													i(style ='color: red').fas.fa-trash 
+
+							#addDependentModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='addDependentModal' aria-hidden='true')
+								.modal-dialog(role='document')
+									.modal-content
+										.modal-header
+											h5.modal-title Thêm mới
+											button.close(type='button' data-dismiss='modal' aria-label='Close')
+												span(aria-hidden='true') &times;
+										form#form-add-dependent(action="/student/dependent/add", method="post")
+											.modal-body
+												.row
+													.col-12
+														.form-group
+															label Mã số sinh viên
+															input.form-control(type='text' placeholder='MSSV' name='MSSV')
+												.row 
+													.col-12
+														.form-group
+															label Tên người thân
+															input.form-control(type='text' placeholder='Tên người thân' name='fullName')
+												.row 
+													.col-4
+														.form-group
+															label Số điện thoại
+															input.form-control(type='text' placeholder='Số điện thoại' name='phoneNumber')
+													.col-4 
+														.form-group
+															label Mối quan hệ
+															input.form-control(type='text' placeholder='Mối quan hệ' name='relation')
+													.col-4
+														.form-group
+															label Nghề nghiệp
+															input.form-control(type='text' placeholder='Nghề nghiệp' name='job')
+												.row 
+													.col-12
+														.form-group
+															label Địa chỉ
+															input.form-control(type='text' placeholder='Địa chỉ' name='address')
+											.modal-footer
+												button.btn.btn-secondary(type='button' data-dismiss='modal') Đóng lại
+												button.btn.btn-primary(type='submit') Thêm mới
+							
+							#editDependentModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='editDependentModal' aria-hidden='true')
+										.modal-dialog(role='document')
+											.modal-content
+												.modal-header
+													h5.modal-title Chỉnh sửa thông tin sinh viên
+													button.close(type='button' data-dismiss='modal' aria-label='Close')
+														span(aria-hidden='true') &times;
+												form(action="/student/dependent/edit", method="post")
+													.modal-body
+														.form-group
+															input(type="hidden", name="MSSV")
+														
+														.form-group
+															label Tên người thân
+															input.form-control(type='text', placeholder='Tên người thân', name='fullName' readonly)
+														.form-group
+															label Số điện thoại
+															input.form-control(type='text', placeholder='Số điện thoại', name='phoneNumber')
+														.form-group
+															label Mối quan hệ
+															input.form-control(type='text', placeholder='Mối quan hệ', name='relation')
+														.form-group
+															label Nghề nghiệp
+															input.form-control(type='text', placeholder='Nghề nghiệp', name='job')
+														.form-group
+															label Địa chỉ
+															input.form-control(type='text', placeholder='Địa chỉ', name='address')
+														
+													.modal-footer
+														button.btn.btn-secondary(type='button' data-dismiss='modal') Đóng lại
+														button.btn.btn-primary(type='submit') Cập nhật
+
+							#deleteDependentModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='deleteFacultyModal' aria-hidden='true')
+								.modal-dialog(role='document')
+									.modal-content.bg-danger
+										.modal-header
+											h5.modal-title Xóa
+											button.close(type='button' data-dismiss='modal' aria-label='Close')
+												span(aria-hidden='true') &times;
+										form(action="/student/dependent/delete", method="post")
+											.modal-body
+												input(type="hidden", name="MSSV")
+												input(type="hidden", name="fullName")
+												p Bạn có chắc chắn muốn xóa người thân của sinh viên này không ?
+											.modal-footer
+												button.btn.btn-outline-light(type='button' data-dismiss='modal') Đóng lại
+												button.btn.btn-outline-light(type='submit') Xác nhận
+
+
+
+block script 
+	script(src="/javascripts/student/dependent.js") 

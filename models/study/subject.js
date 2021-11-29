@@ -12,7 +12,6 @@ exports.deleteSubject = async function(subjectID) {
     await connection.awaitQuery(`DELETE FROM subject WHERE subjectID = '${subjectID}'`)
 }
 
-
 exports.addSubject = async function(subject) {
     let lab_score_weight = 10 - (Number(subject.final_score_weight) + Number(subject.exercise_weight));
     await connection.awaitQuery(`INSERT INTO subject  VALUES ('${subject.subjectID}','${subject.subjectName}', ${subject.credit}, ${Number(subject.final_score_weight)}, ${Number(subject.exercise_weight)}, ${lab_score_weight})`)
