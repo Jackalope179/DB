@@ -1,35 +1,36 @@
-let activityModel = require('../../models/activity/activity')
+let joinactivityModel = require('../../models/activity/activity')
 
 class activityController {
     async getActivity(req, res) {
+        let activityID = req.body.activityID;
         res.render("activity/activity", {
             title: `THÔNG TIN HOẠT ĐỘNG`,
-            activityList: await activityModel.getAllActivity()
+            joinactivityList: await joinactivityModel.getActivity(activityID)
         })
     }
 
     async editActivity(req, res) {
         let activity = req.body;
-        await activityModel.editActivity(activity);
+        await joinactivityModel.editActivity(activity);
         res.redirect('/activity/activity');
     }
 
     async deleteActivity(req, res) {
-        let activityID = req.body.activityID;
-        await activityModel.deleteActivity(activityID);
+        let MSSV = req.body.MSSV;
+        await joinactivityModel.deleteActivity(MSSV);
         res.redirect('/activity/activity');
     }
 
     async addActivity(req, res) {
         let activity = req.body;
-        await activityModel.addActivity(activity);
+        await joinactivityModel.addActivity(activity);
         res.redirect('/activity/activity');
     }
 
     async checkId(req, res) {
-        let activityID = req.body.activityID;
-        console.log(activityID);
-        let data = await activityModel.checkid(activityID);
+        let MSSV = req.body.MSSV;
+        console.log(MSSV);
+        let data = await joinactivityModel.checkid(MSSV);
         if (data.length > 0) {
             res.json({
                 status: "FOUND",
