@@ -20,3 +20,16 @@ exports.addSubject = async function(subject) {
 exports.checkid = async function(subjectID) {
     return await connection.awaitQuery(`SELECT * FROM subject WHERE subjectID = '${subjectID}'`)
 }
+
+
+exports.addGroupclass = async function(groupclass) {
+    await connection.awaitQuery(`INSERT INTO groupclass  VALUES(
+        '${groupclass.classID}', 
+        '${groupclass.groupID}', 
+        '${groupclass.subjectID}', 
+        ${groupclass.year}, 
+        ${groupclass.semester}, 
+        '${groupclass.startTime}', 
+        '${groupclass.endTime}', 
+        '${groupclass.MSGV}' )`)
+}

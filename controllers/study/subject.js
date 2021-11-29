@@ -22,10 +22,15 @@ class subjectController {
         let semester = Number(params.semester);
 
         let subjectList = await groupclassModel.getAllGroupClassDetail(year, semester);
-
+        let teacherList = await groupclassModel.getAllteacher();
+        let allsubject = await subjectModel.getAllsubject();
         res.render("study/groupclass_detail", {
             title: `${year} - ${semester}`,
-            subjectList: subjectList
+            subjectList: subjectList,
+            teacherList: teacherList,
+            year: year,
+            semester: semester,
+            allsubject: allsubject
         })
 
     }
@@ -37,11 +42,10 @@ class subjectController {
     }
 
     async deleteSubject(req, res) {
-        let subjectID = req.body;
-        await subjectModel.deletesubject(subjectID);
+        let subjectID = req.body.subjectID;
+        await subjectModel.deleteSubject(subjectID);
         res.redirect('/study/subject');
     }
-
 
     async addSubject(req, res) {
         let subject = req.body;
@@ -62,5 +66,7 @@ class subjectController {
                 status: "NOT_FOUND",
             });
     }
+
+
 }
 module.exports = new subjectController();

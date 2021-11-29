@@ -1,36 +1,40 @@
-extends ../layout 
+extends ../layoutstudent
 
-block content 
+block content
 	section.content-header
 		.container-fluid
 			.row.mb-2
 				.col-sm-6
-					h1 #{title}
+					h1 THỜI KHÓA BIỂU
 	section.content
 		.container-fluid
-			.row
-				.col-12
-					.card
-						.card-body
-							table#tab-subject.table.table-bordered.table-striped
-								thead
-									tr
-										th Mã môn học
-										th Tên Môn
-										th Số tín chỉ
-										th Điểm BTL
-										th Điểm tn
-										th Điểm thi 
-										th Tổng kết
-								tbody
-									each subject in subjectStudy 
-										tr 
-											td=subject.subjectID
-											td=subject.subjectName
-											td=subject.credit
-											td=subject.exercisescore
-											td=subject.labscore
-											td=subject.finalscore
-											td=subject.totalscore
-block script 
-	script(src="/javascripts/study/subject.js") 
+			each yearsemester in yearSemester
+				.row
+					.col-12
+						.card
+							.card-body
+								h4 Năm học #{yearsemester.year} - Học kì #{yearsemester.semester}
+								table.tab-subject.table.table-bordered.table-striped
+									thead
+										tr
+											th Mã MH
+											th Tên Môn
+											th Nhóm-Tổ
+											th Số TC
+											th Điểm thành phần
+											th Điểm thi
+											th Điểm tổng kết
+									tbody
+										each study in studyScore
+											if study.year ==  yearsemester.year 
+												if study.semester ==  yearsemester.semester
+													tr 
+														td=study.subjectID
+														td=study.subjectName
+														td=study.groupClass
+														td=study.credit
+														td=study.score
+														td=study.finalscore
+														td=study.total_score
+block script
+	script(src="/javascripts/TKB.js") 

@@ -1,35 +1,41 @@
-extends ../layout 
+extends ../layoutstudent
 
-block content 
+block content
 	section.content-header
 		.container-fluid
 			.row.mb-2
 				.col-sm-6
-					h1 THỜI KHÓA BIỂU
+					h1 BẢNG ĐIỂM
 	section.content
 		.container-fluid
-			.row
-				.col-12
-					.card
-						.card-body
-							table#tab-subject.table.table-bordered.table-striped
-								thead
-									tr
-										th Mã môn học
-										th Tên Môn
-										th Tín chỉ
-										th Nhóm
-										th Giờ học
-										th Phòng
-										th Tuần học
-								tbody
-									each study in studyDetailRender 
-										tr 
-											td=study.subjectID
-											td=study.subjectName
-											td=study.credit
-											td=study.groupClass
-											td=study.roomID
-											td=subject.TKB
-block script 
-	script(src="/javascripts/study/subject.js") 
+			each yearsemester in yearSemester
+				.row
+					.col-12
+						.card
+							.card-body
+								h4 Năm học #{yearsemester.year} - Học kì #{yearsemester.semester}
+								table.tab-subject.table.table-bordered.table-striped
+									thead
+										tr
+											th Mã môn học
+											th Tên Môn
+											th Tín chỉ
+											th Nhóm
+											th Giờ học
+											th Phòng
+											th Tuần học
+									tbody
+										each study in studyDetail
+											if study.year ==  yearsemester.year 
+												if study.semester ==  yearsemester.semester
+													tr 
+														td=study.subjectID
+														td=study.subjectName
+														td=study.credit
+														td=study.groupClass
+														td=study.timing
+														td=study.roomID
+														td=study.week
+block script
+	script(src="/javascripts/TKB.js") 
+

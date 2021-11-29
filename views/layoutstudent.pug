@@ -33,85 +33,22 @@ html(lang='en')
 				// Brand Logo
 				a.brand-link(href='/index3.html'  style = 'background:#8b5c7e; height: 71px;')
 					img.brand-image.img-circle.elevation-3(src='https://upload.wikimedia.org/wikipedia/commons/d/de/HCMUT_official_logo.png' alt='AdminLTE Logo' style='opacity: .8')
-					span.brand-text.font-weight-light BK Mananger
+					span.brand-text.font-weight-light Thông tin sinh viên
 				// Sidebar
 				.sidebar
 					// Sidebar Menu
 					nav.mt-2
 						ul.nav.nav-pills.nav-sidebar.flex-column(data-widget='treeview' role='menu' data-accordion='false' )
 							li.nav-item
-								a.nav-link(href='/department')
-									i.nav-icon.fas.fa-school
+								a.nav-link(href='/account/' +`${mssv}`)
+									i.fas.fa-calendar-alt(style= 'margin-right: 7px')
 									p
-										| Quản lý Khoa
-										i.fas.fa-angle-left.right
-								ul.nav.nav-treeview
-									li.nav-item
-										a.nav-link(href='/department/department')
-											i.far.fa-circle.nav-icon
-											p Danh sách Khoa
+										| Thời khóa biểu
 							li.nav-item
-								a.nav-link(href='/teacher')
-									i.nav-icon.fas.fa-school
+								a.nav-link(href='/score/' + `${mssv}`)
+									i.fas.fa-paste(style= 'margin-right: 7px')
 									p
-										| Quản lý Giảng viên
-										i.fas.fa-angle-left.right
-								ul.nav.nav-treeview
-									li.nav-item
-										a.nav-link(href='/teacher/teacher')
-											i.far.fa-circle.nav-icon
-											p Danh sách Giảng viên
-							li.nav-item
-								a.nav-link(href='/activity')
-									i.nav-icon.fas.fa-school
-									p
-										| Hoạt động ngoại khóa
-										i.fas.fa-angle-left.right
-								ul.nav.nav-treeview
-									li.nav-item
-										a.nav-link(href='/activity/activity')
-											i.far.fa-circle.nav-icon
-											p Danh sách Hoạt động
-							li.nav-item
-								a.nav-link(href='/students')
-									i.nav-icon.far.fa-user
-									p
-										| Thông tin sinh viên
-										i.fas.fa-angle-left.right
-								ul.nav.nav-treeview
-									li.nav-item
-										a.nav-link(href='/student/student')
-											i.far.fa-circle.nav-icon
-											p Danh sách sinh viên
-									//- li.nav-item
-									//- 	a.nav-link(href='/student/address')
-									//- 		i.far.fa-circle.nav-icon
-									//- 		p Danh sách địa chỉ
-									li.nav-item
-										a.nav-link(href='/student/dependent')
-											i.far.fa-circle.nav-icon
-											p Thông tin người thân
-							li.nav-item
-								a.nav-link(href='#')
-									i.nav-icon.fas.fa-cubes
-									p
-										| Thông tin môn học
-										i.fas.fa-angle-left.right
-								ul.nav.nav-treeview
-									li.nav-item
-										a.nav-link(href='/study/subject')
-											i.far.fa-circle.nav-icon
-											p Danh sách môn học
-									li.nav-item
-										a.nav-link(href='/study/groupclass')
-											i.far.fa-circle.nav-icon
-											p Danh sách các tổ nhóm
-							li.nav-item
-								a.nav-link(href='/study/classroom')
-									i.nav-icon.far.fa-user
-									p
-										| Quản lý phòng học
-
+										| Bảng điểm
 			.content-wrapper(style = 'background: rgba(243,167,141,255)')
 				block content
 
