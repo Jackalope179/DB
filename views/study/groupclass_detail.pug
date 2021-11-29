@@ -15,6 +15,9 @@ block content
 							button.btn.btn-primary.btn-add(data-toggle="modal" data-target="#addDetailModal", type="button") 
 								i.fas.fa-plus(style = "margin-right: 5px")
 								| Thêm mới 
+							button.btn.btn-primary.btn-add(data-toggle="modal" data-target="#FilterModal", type="button", style = "margin-left: 10px") 
+								i.fas.fa-filter(style = "margin-right: 5px")
+								| Bộ lọc
 							table#tab-groupclass.table.table-bordered.table-striped
 								thead
 									tr
@@ -51,6 +54,55 @@ block content
 												data-groupid = subject.groupID
 												)
 													i(style ='color: red').fas.fa-trash 
+							#FilterModal.modal.fade( role='dialog' aria-labelledby='addFacultyModal' aria-hidden='true')
+								.modal-dialog(role='document')
+									.modal-content
+										.modal-header
+											h5.modal-title Tìm kiếm nâng cao
+											button.close(type='button' data-dismiss='modal' aria-label='Close')
+												span(aria-hidden='true') &times;
+										form#form-add-subject(action="/study/groupclass/search", method="post")
+											.modal-body
+												.row
+													.col-12
+														.form-group
+															label Môn học
+															select#sel-subject.form-control.select2(name="subjectID", style="width: 100%;")
+																each subject in allsubject 
+																	option(value=subject.subjectID)=subject.subjectName
+														.form-group
+															input(type="hidden", name="year", value = year)
+														.form-group
+															input(type="hidden", name="semester", value = semester)
+												.row
+													.col-6
+														.form-group
+															label Tên tổ
+															input.form-control(type='text' placeholder='Tên tổ' name='classID')
+													.col-6
+														.form-group
+															label Tên nhóm
+															input.form-control(type='text' placeholder='Tên nhóm' name='groupID')
+												.row 
+													.col-6
+														.form-group
+															label Giờ bắt đầu
+															input.form-control(type='time' placeholder='Giớ bắt đầu' name='startTime')
+													.col-6
+														.form-group
+															label Giờ kết thúc
+															input.form-control(type='time' placeholder='Giờ kết thúc' name='endTime')
+												.row 
+													.col-12
+														.form-group
+															label Giảng viên
+															select#sel-teacher1.form-control.select2(name="MSGV", style="width: 100%;")
+																each teacher in teacherList 
+																	option(value=teacher.MSGV)=teacher.fullName + '-' + teacher.MSGV
+											.modal-footer
+												button.btn.btn-primary.btn-lg(type='submit') 
+													| Lọc 
+													i.fas.fa-search(style = "margin-left: 5px")
 
 							#addDetailModal.modal.fade( role='dialog' aria-labelledby='addFacultyModal' aria-hidden='true')
 								.modal-dialog(role='document')

@@ -33,3 +33,49 @@ exports.addGroupclass = async function(groupclass) {
         '${groupclass.endTime}', 
         '${groupclass.MSGV}' )`)
 }
+
+exports.searchSubject = async function(subject, len) {
+    let str = `SELECT * FROM subject WHERE `
+    let count = 0
+    for (const key in subject) {
+        if (subject[key] != '') {
+            if (key == 'classID') {
+                str += `classID LIKE '%${subject[key]}%'`
+            } else if (key == 'groupID') {
+                str += `groupID LIKE '%${subject[key]}%'`
+            } else if (key == 'subjectName') {
+                str += `subjectName LIKE '%${subject[key]}%'`
+            } else if (key == 'fullName') {
+                str += `fullName LIKE '%${subject[key]}%'`
+            } else
+                str += `${key} = '${subject[key]}'`
+            count++;
+            if (count != len)
+                str += ` AND `
+        }
+
+    }
+    console.log(str);
+    return await connection.awaitQuery(`${str}`)
+}
+exports.searchGroupclass = async function(subject, len, year, semester) {
+    let str = `SELECT * FROM ((groupclass natural join subject) natural join teacher) WHERE `
+    let count = 0
+    for (const key in subject) {
+        if (subject[key] != '') {
+            if (key == 'subjectName') {
+                str += `subjectName LIKE '%${subject[key]}%'`
+            } else
+                str += `${key} = '${subject[key]}'`
+            count++;
+            if (count != len)
+                str += ` AND `
+        }
+
+    }
+    return await connection.awaitQuery(`${str}`)
+}
+
+exports.getInfo = async function(mssv) {
+    return await connection.awaitQuery(`SELECT * FROM student natural join dependent WHERE mssv = '${mssv}'`)
+}

@@ -20,3 +20,8 @@ exports.getAllsubject = async function(mssv) {
 exports.getScore = async function(mssv) {
     return connection.awaitQuery(`SELECT * FROM (study natural join groupclass) natural join subject where mssv =${mssv}`)
 }
+
+
+exports.getInfo = async function(mssv) {
+    return connection.awaitQuery(`SELECT * FROM student where mssv =${mssv}`)
+}

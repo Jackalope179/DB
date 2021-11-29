@@ -10,6 +10,9 @@ $("#sel-subject").select2({
 
 $("#tab-groupclass").DataTable({
     retrieve: true,
+    buttons: [
+        'copy', 'csv', 'excel', 'pdf', 'print'
+    ],
     responsive: true,
     lengthChange: false,
     paging: false,

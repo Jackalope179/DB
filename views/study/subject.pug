@@ -15,8 +15,8 @@ block content
 							button.btn.btn-primary.btn-add(data-toggle="modal" data-target="#addSubjectModal", type="button") 
 								i.fas.fa-plus(style = "margin-right: 5px")
 								| Thêm mới
-							button.btn.btn-primary.btn-add(data-toggle="modal" data-target="#addSubjectModal", type="button", style = "margin-left: 10px") 
-								i.fas.fa-filter
+							button.btn.btn-primary.btn-add(data-toggle="modal" data-target="#FilterModal", type="button", style = "margin-left: 10px") 
+								i.fas.fa-filter(style = "margin-right: 5px")
 								| Bộ lọc
 							table#tab-subject.table.table-bordered.table-striped
 								thead
@@ -84,6 +84,42 @@ block content
 											.modal-footer
 												button.btn.btn-secondary(type='button' data-dismiss='modal') Đóng lại
 												button.btn.btn-primary(type='submit') Thêm mới
+							#FilterModal.modal.fade( role='dialog' aria-labelledby='addFacultyModal' aria-hidden='true')
+								.modal-dialog(role='document')
+									.modal-content
+										.modal-header
+											h5.modal-title Tìm kiếm nâng cao
+											button.close(type='button' data-dismiss='modal' aria-label='Close')
+												span(aria-hidden='true') &times;
+										form#form-add-subject(action="/study/search", method="post")
+											.modal-body
+												.row
+													.col-12
+														.form-group
+															label Mã môn
+															input.form-control(type='text' placeholder='Mã môn' name='subjectID')
+												.row 
+													.col-12
+														.form-group
+															label Tên môn
+															input.form-control(type='text' placeholder='Tên môn' name='subjectName')
+												.row 
+													.col-4
+														.form-group
+															label Số tín chỉ
+															input.form-control(type='number' placeholder='Số tín chỉ' name='credit')
+													.col-4 
+														.form-group
+															label Hệ số thi
+															input.form-control(type='text' placeholder='Hệ số thi' name='final_score_weight')
+													.col-4
+														.form-group
+															label Hệ số bài tập
+															input.form-control(type='text' placeholder='Hệ số bài tập' name='exercise_weight')
+											.modal-footer
+												button.btn.btn-primary.btn-lg(type='submit') 
+													| Lọc 
+													i.fas.fa-search(style = "margin-left: 5px")
 							
 							#editSubjectModal.modal.fade( role='dialog' aria-labelledby='editSubjectModal' aria-hidden='true')
 										.modal-dialog(role='document')
