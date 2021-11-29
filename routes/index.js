@@ -105,4 +105,11 @@ router.get('/score/:mssv', async function(req, res) {
 })
 
 
+router.get('/info/:mssv', async function(req, res) {
+    let mssv = req.params.mssv;
+    let student = (await studyModel.getInfo(mssv))[0]
+    let fullname = student.fname + ' ' + student.midname + ' ' + student.lname;
+    console.log(student);
+    res.render('info', { mssv: mssv, title: 'Thông tin sinh viên', student: student, fullname: fullname });
+})
 module.exports = router;

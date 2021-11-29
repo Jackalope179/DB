@@ -5,6 +5,7 @@ $("#tab-subject").DataTable({
     language: {
         url: "https://cdn.datatables.net/plug-ins/1.10.25/i18n/Vietnamese.json",
     },
+
     columnDefs: [{
         "targets": 6,
         "orderable": false
