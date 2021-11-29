@@ -23,11 +23,14 @@ class subjectController {
 
         let subjectList = await groupclassModel.getAllGroupClassDetail(year, semester);
         let teacherList = await groupclassModel.getAllteacher();
-
+        let allsubject = await subjectModel.getAllsubject();
         res.render("study/groupclass_detail", {
             title: `${year} - ${semester}`,
             subjectList: subjectList,
-            teacherList: teacherList
+            teacherList: teacherList,
+            year: year,
+            semester: semester,
+            allsubject: allsubject
         })
 
     }
@@ -63,5 +66,7 @@ class subjectController {
                 status: "NOT_FOUND",
             });
     }
+
+
 }
 module.exports = new subjectController();

@@ -24,7 +24,7 @@ block content
 										th HS thi
 										th HS bài tập
 										th HS lab 
-										th Thao tác
+										th Chỉnh sửa
 								tbody
 									each subject in subjectList 
 										tr 
@@ -46,7 +46,7 @@ block content
 												button.btn-delete(style="margin-right: 5px; border:none", data-subjectid = subject.subjectID)
 													i(style ='color: red').fas.fa-trash 
 
-							#addSubjectModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='addFacultyModal' aria-hidden='true')
+							#addSubjectModal.modal.fade( role='dialog' aria-labelledby='addFacultyModal' aria-hidden='true')
 								.modal-dialog(role='document')
 									.modal-content
 										.modal-header
@@ -82,7 +82,7 @@ block content
 												button.btn.btn-secondary(type='button' data-dismiss='modal') Đóng lại
 												button.btn.btn-primary(type='submit') Thêm mới
 							
-							#editSubjectModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='editSubjectModal' aria-hidden='true')
+							#editSubjectModal.modal.fade( role='dialog' aria-labelledby='editSubjectModal' aria-hidden='true')
 										.modal-dialog(role='document')
 											.modal-content
 												.modal-header
@@ -112,7 +112,7 @@ block content
 														button.btn.btn-secondary(type='button' data-dismiss='modal') Đóng lại
 														button.btn.btn-primary(type='submit') Cập nhật
 
-							#deleteSubjectModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='deleteFacultyModal' aria-hidden='true')
+							#deleteSubjectModal.modal.fade(role='dialog' aria-labelledby='deleteFacultyModal' aria-hidden='true')
 								.modal-dialog(role='document')
 									.modal-content.bg-danger
 										.modal-header
@@ -123,6 +123,7 @@ block content
 											.modal-body
 												input(type="hidden", name="subjectID")
 												p Bạn có chắc chắn muốn xóa môn này không ?
+												| Lưu ý : Tất cả dữ liệu liên quan tới môn này sẽ bị xóa
 											.modal-footer
 												button.btn.btn-outline-light(type='button' data-dismiss='modal') Đóng lại
 												button.btn.btn-outline-light(type='submit') Xác nhận
