@@ -40,15 +40,57 @@ html(lang='en')
 					nav.mt-2
 						ul.nav.nav-pills.nav-sidebar.flex-column(data-widget='treeview' role='menu' data-accordion='false' )
 							li.nav-item
-								a.nav-link(href='/faculty')
+								a.nav-link(href='/department')
 									i.nav-icon.fas.fa-school
 									p
 										| Quản lý Khoa
+										i.fas.fa-angle-left.right
+								ul.nav.nav-treeview
+									li.nav-item
+										a.nav-link(href='/department/department')
+											i.far.fa-circle.nav-icon
+											p Danh sách Khoa
+							li.nav-item
+								a.nav-link(href='/teacher')
+									i.nav-icon.fas.fa-school
+									p
+										| Quản lý Giảng viên
+										i.fas.fa-angle-left.right
+								ul.nav.nav-treeview
+									li.nav-item
+										a.nav-link(href='/teacher/teacher')
+											i.far.fa-circle.nav-icon
+											p Danh sách Giảng viên
+							li.nav-item
+								a.nav-link(href='/activity')
+									i.nav-icon.fas.fa-school
+									p
+										| Hoạt động ngoại khóa
+										i.fas.fa-angle-left.right
+								ul.nav.nav-treeview
+									li.nav-item
+										a.nav-link(href='/activity/activity')
+											i.far.fa-circle.nav-icon
+											p Danh sách Hoạt động
 							li.nav-item
 								a.nav-link(href='/students')
 									i.nav-icon.far.fa-user
 									p
 										| Thông tin sinh viên
+										i.fas.fa-angle-left.right
+								ul.nav.nav-treeview
+									li.nav-item
+										a.nav-link(href='/student/student')
+											i.far.fa-circle.nav-icon
+											p Danh sách sinh viên
+									//- li.nav-item
+									//- 	a.nav-link(href='/student/address')
+									//- 		i.far.fa-circle.nav-icon
+									//- 		p Danh sách địa chỉ
+									li.nav-item
+										a.nav-link(href='/student/dependent')
+											i.far.fa-circle.nav-icon
+											p Thông tin người thân
 							li.nav-item
 								a.nav-link(href='#')
 									i.nav-icon.fas.fa-cubes

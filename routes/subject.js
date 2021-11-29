@@ -9,5 +9,7 @@ router.get('/groupclass/:year.:semester', subjectController.getGroupClassDetail)
 router.get('/classroom', classroomController.getAllClassroom)
 router.post('/subject/edit', subjectController.editSubject)
 router.post('/subject/delete', subjectController.deleteSubject)
+router.post('/subject/add', subjectController.addSubject)
+router.post('/subject/checkid', subjectController.checkId)
 
 module.exports = router;

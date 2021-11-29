@@ -1,0 +1,308 @@
+extends ../layout 
+
+block content 
+	section.content-header
+		.container-fluid
+			.row.mb-2
+				.col-sm-6
+					h1 #{title}
+	section.content
+		.container-fluid
+			.row
+				.col-12
+					.card
+						.card-body
+							button.btn.btn-primary.btn-add(data-toggle="modal" data-target="#addStudentModal", type="button") 
+								i.fas.fa-plus(style = "margin-right: 5px")
+								| Thêm mới
+							table#tab-student.table.table-bordered.table-striped
+								thead
+									tr
+										th Thao tác
+										th MSSV
+										th Email
+										th Họ tên
+										//- th Tên đệm
+										//- th Tên
+										th Số điện thoại
+										th Giới tính
+										th Khoa
+										th Hệ đào tạo
+										th MSGVCN
+										th Khóa
+										th Ngày CTXH
+										th Điểm TBTL
+										th Số TCTL
+										th Địa chỉ thường trú
+										th Mail cá nhân
+								tbody
+									each student in studentList 
+										tr 
+											td.text-center
+												button.btn-edit(style="margin-right: 5px; border:none", 
+												data-mssv = student.MSSV,
+												data-schoolemail = student.school_email, 
+												data-fname = student.fname, 
+												data-midname = student.midname, 
+												data-lname = student.lname, 
+												data-phone = student.phone,
+												data-training_system = student.training_system,
+												data-personal_email = student.personal_email, 
+												data-msgv = student.MSGV, 
+												data-gender = student.gender, 
+												data-social_day = student.social_day, 
+												data-gpa = student.GPA,
+												data-departmentid = student.departmentID,
+												data-tctl = student.TCTL,
+												data-khoa = student.Khoa,
+												data-houseaddress = student.houseaddress,
+												data-street = student.street,
+												data-ward = student.ward,
+												data-district = student.district,
+												data-city = student.city)
+													i.fas.fa-edit(style="color:blue")
+												button.btn-delete(style="margin-right: 5px; border:none", data-mssv = student.MSSV)
+													i(style ='color: red').fas.fa-trash 
+											td=student.MSSV
+											td=student.school_email
+											td=(student.fname + " " + student.midname + " " + student.lname)
+											//- td=student.midname
+											//- td=student.lname
+											td=student.phone
+											if(student.gender == 'F')
+												td='Nữ'
+											else
+												td='Nam'
+											//- td=student.gender
+											td=student.departmentName
+											td=student.training_system
+											each teacher in teacherList
+												if(teacher.MSGV == student.MSGV)
+													td=teacher.fullName
+											//- td=student.MSGV
+											td=student.Khoa
+											td=student.social_day
+											td=student.GPA
+											td=student.TCTL
+											td=(student.houseaddress + ", " + student.street + ", " + student.ward + ", " + student.district + ", " + student.city)
+											td=student.personal_email
+
+
+							#addStudentModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='addStudentModal' aria-hidden='true')
+								.modal-dialog(role='document')
+									.modal-content
+										.modal-header
+											h5.modal-title Thêm mới
+											button.close(type='button' data-dismiss='modal' aria-label='Close')
+												span(aria-hidden='true') &times;
+										form#form-add-student(action="/student/student/add", method="post")
+											.modal-body
+												.row
+													.col-12
+														.form-group
+															label Mã số sinh viên
+															input.form-control(type='text' placeholder='MSSV' name='MSSV')
+												.row 
+													.col-12
+														.form-group
+															label Email
+															input.form-control(type='text' placeholder='Email' name='school_email')
+												.row 
+													.col-4
+														.form-group
+															label Họ
+															input.form-control(type='text' placeholder='Họ' name='fname')
+													.col-4 
+														.form-group
+															label Tên đệm
+															input.form-control(type='text' placeholder='Tên đệm' name='midname')
+													.col-4
+														.form-group
+															label Tên
+															input.form-control(type='text' placeholder='Tên' name='lname')
+												.row 
+													.col-12
+														.form-group
+															label Số điện thoại
+															input.form-control(type='text' placeholder='Số điện thoại' name='phone')
+												.row 
+													.col-6
+														.form-group
+															label Hệ đào tạo
+															select#sel-teacher.form-control.select2(name="training_system", style="width: 100%;")
+																option(value='Đại trà')='Đại trà'
+																option(value='CLC')='CLC'
+																option(value='Việt Pháp')='Việt Pháp'
+															//- input.form-control(type='text' placeholder='Hệ đào tạo' name='training_system')
+													.col-6 
+														.form-group
+															label Giới tính
+															select#sel-gender.form-control.select2(name="gender", style="width: 100%;")
+																//- each teacher in teacherList 
+																option(value='F')='Nữ'
+																option(value='M')='Nam'
+															//- input.form-control(type='text' placeholder='Giới tính' name='gender')
+													.col-4
+														.form-group
+															//- label Ngày CTXH
+															input.form-control(type='hidden' placeholder='Ngày CTXH' name='social_day')
+												.row 
+													.col-12
+														.form-group
+															//- label Điểm trung bình tích lũy
+															input.form-control(type='hidden' placeholder='Điểm trung bình tích lũy' name='GPA')
+												.row 
+													.col-12
+														.form-group
+															label Email cá nhân
+															input.form-control(type='text' placeholder='Email cá nhân' name='personal_email')
+												.row 
+													.col-12
+														.form-group
+															label MSGVCN
+															select#sel-gvcn.form-control.select2(name="MSGV", style="width: 100%;")
+																each teacher in teacherList
+																	option(value=teacher.MSGV)=teacher.fullName + '-' + teacher.MSGV
+															//- input.form-control(type='text' placeholder='MSGVCN' name='MSGV')
+												.row 
+													.col-12
+														.form-group
+															label Khoa
+															select#sel-dept.form-control.select2(name="departmentID", style="width: 100%;")
+																each dept in deptList
+																	option(value=dept.departmentID)=dept.departmentName + '-' + dept.departmentID
+															//- input.form-control(type='text' placeholder='Mã Khoa' name='departmentID')
+												.row 
+													.col-12
+														.form-group
+															//- label Số tín chỉ tích lũy
+															input.form-control(type='hidden' placeholder='Số tín chỉ tích lũy' name='TCTL')
+												.row 
+													.col-12
+														.form-group
+															label Khóa
+															input.form-control(type='text' placeholder='Khóa' name='Khoa')
+												.row 
+													.col-3
+														.form-group
+															label Số nhà
+															input.form-control(type='text' placeholder='Số nhà' name='houseaddress')
+													.col-5
+														.form-group
+															label Đường
+															input.form-control(type='text' placeholder='Đường' name='street')
+													.col-4
+														.form-group
+															label Phường/Xã
+															input.form-control(type='text' placeholder='Phường/Xã' name='ward')
+												.row 
+													.col-6
+														.form-group
+															label Quận/Huyện/Trị trấn
+															input.form-control(type='text' placeholder='Quận/Huyện/Trị trấn' name='district')
+													.col-6
+														.form-group
+															label Tỉnh/TP
+															input.form-control(type='text' placeholder='Tỉnh/TP' name='city')
+											.modal-footer
+												button.btn.btn-secondary(type='button' data-dismiss='modal') Đóng lại
+												button.btn.btn-primary(type='submit') Thêm mới
+							
+							#editStudentModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='editStudentModal' aria-hidden='true')
+										.modal-dialog(role='document')
+											.modal-content
+												.modal-header
+													h5.modal-title Chỉnh sửa thông tin sinh viên
+													button.close(type='button' data-dismiss='modal' aria-label='Close')
+														span(aria-hidden='true') &times;
+												form(action="/student/student/edit", method="post")
+													.modal-body
+														.form-group
+															input(type="hidden", name="MSSV")
+														.form-group
+															label Email
+															input.form-control(type='text', placeholder='Email', name='school_email' readonly)
+														.form-group
+															label Họ
+															input.form-control(type='text', placeholder='Họ', name='fname')
+														.form-group
+															label Tên đệm
+															input.form-control(type='text', placeholder='Tên đệm', name='midname')
+														.form-group
+															label Tên
+															input.form-control(type='text', placeholder='Tên', name='lname')
+														.form-group
+															label Số điện thoại
+															input.form-control(type='text', placeholder='Số điện thoại', name='phone')
+														.form-group
+															label Hệ đào tạo
+															select#sel-teacher.form-control.select2(name="training_system", style="width: 100%;")
+																option(value='Đại trà')='Đại trà'
+																option(value='CLC')='CLC'
+																option(value='Việt Pháp')='Việt Pháp'
+															//- input.form-control(type='text', placeholder='Hệ đào tạo', name='training_system')
+														.form-group
+															//- label Giới tính
+															input.form-control(type='hidden', placeholder='Giới tính', name='gender')
+														.form-group
+															//- label Ngày CTXH
+															input.form-control(type='hidden', placeholder='Ngày CTXH', name='social_day')
+														.form-group
+															//- label Điểm TBTL
+															input.form-control(type='hidden', placeholder='Điểm TBTL', name='GPA')
+														.form-group
+															label Email cá nhân
+															input.form-control(type='text', placeholder='Email cá nhân', name='personal_email')
+														.form-group
+															label MSGVCN
+															select#sel-gvcn.form-control.select2(name="MSGV", style="width: 100%;")
+																each teacher in teacherList
+																	option(value=teacher.MSGV)=teacher.fullName + '-' + teacher.MSGV
+															//- input.form-control(type='text', placeholder='MSGVCN', name='MSGV')
+														.form-group
+															//- label Khoa
+															input.form-control(type='hidden', placeholder='Khoa', name='departmentName')
+														.form-group
+															//- label Số TCTL
+															input.form-control(type='hidden', placeholder='Số TCTL', name='TCTL')
+														.form-group
+															label Khóa
+															input.form-control(type='text', placeholder='Khóa', name='Khoa')
+														.form-group
+															label Số nhà
+															input.form-control(type='text', placeholder='Số nhà', name='houseaddress')
+														.form-group
+															label Đường
+															input.form-control(type='text', placeholder='Đường', name='street')
+														.form-group
+															label Phường/Xã
+															input.form-control(type='text', placeholder='Phường/xã', name='ward')
+														.form-group
+															label Quận/Huyện/Thị trấn
+															input.form-control(type='text', placeholder='Quận/Huyện/Thị trấn', name='district')
+														.form-group
+															label Tỉnh/TP
+															input.form-control(type='text', placeholder='Tỉnh/TP', name='city')
+													.modal-footer
+														button.btn.btn-secondary(type='button' data-dismiss='modal') Đóng lại
+														button.btn.btn-primary(type='submit') Cập nhật
+
+							#deleteStudentModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='deleteFacultyModal' aria-hidden='true')
+								.modal-dialog(role='document')
+									.modal-content.bg-danger
+										.modal-header
+											h5.modal-title Xóa
+											button.close(type='button' data-dismiss='modal' aria-label='Close')
+												span(aria-hidden='true') &times;
+										form(action="/student/student/delete", method="post")
+											.modal-body
+												input(type="hidden", name="MSSV")
+												p Bạn có chắc chắn muốn xóa sinh viên này không ?
+											.modal-footer
+												button.btn.btn-outline-light(type='button' data-dismiss='modal') Đóng lại
+												button.btn.btn-outline-light(type='submit') Xác nhận
+
+
+
+block script 
+	script(src="/javascripts/student/student.js") 

@@ -36,3 +36,16 @@ $(".btn-delete").click(function(e) {
     $("#deleteSubjectModal input[name = 'subjectID']").val(subjectID);
     $("#deleteSubjectModal").modal("show");
 })
+
+
+$("#form-add-subject").submit(function(e) {
+    e.preventDefault();
+
+    let subjectID = $("input[name='subjectID']").val()
+    let form = $(this);
+
+    $.post("/study/subject/checkid", { subjectID: subjectID }, function(data, status) {
+        if (data.status == "FOUND") alert("Môn học này đã tồn tại !");
+        else form.unbind("submit").submit();
+    });
+});

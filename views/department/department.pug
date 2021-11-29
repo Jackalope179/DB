@@ -1,0 +1,140 @@
+extends ../layout 
+
+block content 
+	section.content-header
+		.container-fluid
+			.row.mb-2
+				.col-sm-6
+					h1 #{title}
+	section.content
+		.container-fluid
+			.row
+				.col-12
+					.card
+						.card-body
+							button.btn.btn-primary.btn-add(data-toggle="modal" data-target="#addDepartmentModal", type="button") 
+								i.fas.fa-plus(style = "margin-right: 5px")
+								| Thêm mới
+							table#tab-student.table.table-bordered.table-striped
+								thead
+									tr
+										th Thao tác
+										th Mã Khoa
+										th Tên Khoa
+										th Năm thành lập
+										th Trưởng Khoa
+										th Số lượng sinh viên
+										th Tổng lương
+										
+								tbody
+									each department in departmentList 
+										tr
+											td.text-center
+												button.btn-edit(style="margin-right: 5px; border:none", 
+												data-departmentid = department.departmentID,
+												data-departmentname = department.departmentName, 
+												data-establishyear = department.establishYear, 
+												data-mgr = department.MGR, 
+												data-studentquanitty = department.studentQuanitty, 
+												data-totalsalary = department.totalSalary)
+													i.fas.fa-edit(style="color:blue")
+												button.btn-delete(style="margin-right: 5px; border:none", data-departmentid = department.departmentID)
+													i(style ='color: red').fas.fa-trash 
+											td=department.departmentID
+											td=department.departmentName
+											td=department.establishYear
+											td=department.MGR
+											td=department.studentQuanitty
+											td=department.totalSalary
+
+							#addDepartmentModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='addDepartmentModal' aria-hidden='true')
+								.modal-dialog(role='document')
+									.modal-content
+										.modal-header
+											h5.modal-title Thêm mới
+											button.close(type='button' data-dismiss='modal' aria-label='Close')
+												span(aria-hidden='true') &times;
+										form#form-add-department(action="/department/department/add", method="post")
+											.modal-body
+												.row
+													.col-12
+														.form-group
+															label Mã Khoa
+															input.form-control(type='text' placeholder='Mã khoa' name='departmentID')
+												.row 
+													.col-12
+														.form-group
+															label Tên Khoa
+															input.form-control(type='text' placeholder='Tên Khoa' name='departmentName')
+												.row 
+													.col-6
+														.form-group
+															label Năm thành lập
+															input.form-control(type='text' placeholder='Năm thành lập' name='establishYear')
+													.col-6
+														.form-group
+															label MSGV trưởng khoa
+															input.form-control(type='text' placeholder='MSGV trưởng khoa' name='MGR')
+													.col-4
+														.form-group
+															//- label Số lượng sinh viên
+															input.form-control(type='hidden' placeholder='Số lượng sinh viên' name='studentQuanitty')
+												.row 
+													.col-12
+														.form-group
+															//- label Tổng lương
+															input.form-control(type='hidden' placeholder='Tổng lương' name='totalSalary')
+											.modal-footer
+												button.btn.btn-secondary(type='button' data-dismiss='modal') Đóng lại
+												button.btn.btn-primary(type='submit') Thêm mới
+							
+							#editDepartmentModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='editDepartmentModal' aria-hidden='true')
+										.modal-dialog(role='document')
+											.modal-content
+												.modal-header
+													h5.modal-title Chỉnh sửa thông tin Khoa
+													button.close(type='button' data-dismiss='modal' aria-label='Close')
+														span(aria-hidden='true') &times;
+												form(action="/department/department/edit", method="post")
+													.modal-body
+														.form-group
+															input(type="hidden", name="departmentID")                                                            													
+														.form-group
+															label Tên Khoa
+															input.form-control(type='text', placeholder='Tên Khoa', name='departmentName')
+														.form-group
+															label Năm thành lập
+															input.form-control(type='text', placeholder='Năm thành lập', name='establishYear')
+														.form-group
+															label MSGV trưởng khoa
+															input.form-control(type='text', placeholder='MSGV trưởng khoa', name='MGR')
+														.form-group
+															//- label Số sinh viên
+															input.form-control(type='hidden', placeholder='Số sinh viên', name='studentQuanitty')
+														.form-group
+															//- label Tổng lương
+															input.form-control(type='hidden', placeholder='Tổng lương', name='totalSalary')
+														
+													.modal-footer
+														button.btn.btn-secondary(type='button' data-dismiss='modal') Đóng lại
+														button.btn.btn-primary(type='submit') Cập nhật
+
+							#deleteDepartmentModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='deleteFacultyModal' aria-hidden='true')
+								.modal-dialog(role='document')
+									.modal-content.bg-danger
+										.modal-header
+											h5.modal-title Xóa
+											button.close(type='button' data-dismiss='modal' aria-label='Close')
+												span(aria-hidden='true') &times;
+										form(action="/department/department/delete", method="post")
+											.modal-body
+												input(type="hidden", name="departmentID")
+												p Bạn có chắc chắn muốn xóa khoa này không ?
+											.modal-footer
+												button.btn.btn-outline-light(type='button' data-dismiss='modal') Đóng lại
+												button.btn.btn-outline-light(type='submit') Xác nhận
+
+
+
+block script 
+	script(src="/javascripts/department/department.js") 

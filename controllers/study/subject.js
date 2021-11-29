@@ -41,5 +41,26 @@ class subjectController {
         await subjectModel.deletesubject(subjectID);
         res.redirect('/study/subject');
     }
+
+
+    async addSubject(req, res) {
+        let subject = req.body;
+        await subjectModel.addSubject(subject);
+        res.redirect('/study/subject');
+    }
+
+    async checkId(req, res) {
+        let subjectId = req.body.subjectID;
+        let data = await subjectModel.checkid(subjectId);
+        if (data.length > 0) {
+            res.json({
+                status: "FOUND",
+                data: data[0],
+            });
+        } else
+            res.json({
+                status: "NOT_FOUND",
+            });
+    }
 }
 module.exports = new subjectController();

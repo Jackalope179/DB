@@ -12,6 +12,9 @@ block content
 				.col-12
 					.card
 						.card-body
+							button.btn.btn-primary.btn-add(data-toggle="modal" data-target="#addSubjectModal", type="button") 
+								i.fas.fa-plus(style = "margin-right: 5px")
+								| Thêm mới
 							table#tab-subject.table.table-bordered.table-striped
 								thead
 									tr
@@ -43,21 +46,38 @@ block content
 												button.btn-delete(style="margin-right: 5px; border:none", data-subjectid = subject.subjectID)
 													i(style ='color: red').fas.fa-trash 
 
-							#addFacultyModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='addFacultyModal' aria-hidden='true')
+							#addSubjectModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='addFacultyModal' aria-hidden='true')
 								.modal-dialog(role='document')
 									.modal-content
 										.modal-header
 											h5.modal-title Thêm mới
 											button.close(type='button' data-dismiss='modal' aria-label='Close')
 												span(aria-hidden='true') &times;
-										form(action="/faculty/add", method="post")
+										form#form-add-subject(action="/study/subject/add", method="post")
 											.modal-body
-												.form-group
-													label Tên khoa
-													input.form-control(type='text' placeholder='Tên khoa' name='name')
-												.form-group
-													label Năm thành lập
-													input.form-control(type='text' placeholder='Năm thành lập' name='establishedYear')
+												.row
+													.col-12
+														.form-group
+															label Mã môn
+															input.form-control(type='text' placeholder='Mã môn' name='subjectID')
+												.row 
+													.col-12
+														.form-group
+															label Tên môn
+															input.form-control(type='text' placeholder='Tên môn' name='subjectName')
+												.row 
+													.col-4
+														.form-group
+															label Số tín chỉ
+															input.form-control(type='number' placeholder='Số tín chỉ' name='credit')
+													.col-4 
+														.form-group
+															label Hệ số thi
+															input.form-control(type='text' placeholder='Hệ số thi' name='final_score_weight')
+													.col-4
+														.form-group
+															label Hệ số bài tập
+															input.form-control(type='text' placeholder='Hệ số bài tập' name='exercise_weight')
 											.modal-footer
 												button.btn.btn-secondary(type='button' data-dismiss='modal') Đóng lại
 												button.btn.btn-primary(type='submit') Thêm mới
@@ -99,7 +119,7 @@ block content
 											h5.modal-title Xóa
 											button.close(type='button' data-dismiss='modal' aria-label='Close')
 												span(aria-hidden='true') &times;
-										form(action="/subject/delete", method="post")
+										form(action="/study/subject/delete", method="post")
 											.modal-body
 												input(type="hidden", name="subjectID")
 												p Bạn có chắc chắn muốn xóa môn này không ?
