@@ -9,7 +9,7 @@ var subjectRouter = require('./routes/subject');
 var studentRouter = require('./routes/student');
 var departmentRouter = require('./routes/department');
 var teacherRouter = require('./routes/teacher');
-// var studentRouter = require('./routes/student');
+var activityRouter = require('./routes/activity');
 
 var app = express();
 
@@ -28,7 +28,7 @@ app.use('/study', subjectRouter);
 app.use('/student', studentRouter);
 app.use('/department', departmentRouter);
 app.use('/teacher', teacherRouter);
-// app.use('/student', studentRouter);
+app.use('/activity', activityRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

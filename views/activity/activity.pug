@@ -1,0 +1,167 @@
+extends ../layout 
+
+block content 
+	section.content-header
+		.container-fluid
+			.row.mb-2
+				.col-sm-6
+					h1 #{title}
+	section.content
+		.container-fluid
+			.row
+				.col-12
+					.card
+						.card-body
+							button.btn.btn-primary.btn-add(data-toggle="modal" data-target="#addActivityModal", type="button") 
+								i.fas.fa-plus(style = "margin-right: 5px")
+								| Thêm mới
+							table#tab-student.table.table-bordered.table-striped
+								thead
+									tr
+										th Mã hoạt động
+										th Tên hoạt động
+										th Ngày bắt đàu
+										th Ngày kết thúc
+										th Số ngày nhận được
+										th Khoa
+										th Số SV tối đa
+										th Thao tác
+								tbody
+									each activity in activityList 
+										tr
+											td=activity.activityID
+											td=activity.activityName
+											td=activity.startDate
+											td=activity.endDate
+											td=activity.totalDay
+											td=activity.departmentID
+											td=activity.maxstudent
+											td.text-center
+												button.btn-edit(style="margin-right: 5px; border:none", 
+												data-activityid = activity.activityID,
+												data-activityname = activity.activityName, 
+												data-startdate = activity.startDate, 
+												data-enddate = activity.endDate, 
+												data-totalday = activity.totalDay, 
+												data-departmentid = activity.departmentID, 
+												data-maxstudent = activity.maxstudent)
+													i.fas.fa-edit(style="color:blue")
+												button.btn-delete(style="margin-right: 5px; border:none", data-activityid = activity.activityID)
+													i(style ='color: red').fas.fa-trash 
+												button.btn-detail(style="margin-right: 5px; border:none", data-activityid = activity.activityID)
+													i(style ='color: black').fas.fa-eye 
+
+							#addActivityModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='addActivityModal' aria-hidden='true')
+								.modal-dialog(role='document')
+									.modal-content
+										.modal-header
+											h5.modal-title Thêm mới
+											button.close(type='button' data-dismiss='modal' aria-label='Close')
+												span(aria-hidden='true') &times;
+										form#form-add-activity(action="/activity/activity/add", method="post")
+											.modal-body
+												.row
+													.col-12
+														.form-group
+															label Mã hoạt động
+															input.form-control(type='text' placeholder='Mã hoạt động' name='activityID')
+												.row 
+													.col-12
+														.form-group
+															label Tên hoạt động
+															input.form-control(type='text' placeholder='Tên hoạt động' name='activityName')
+												.row 
+													.col-6
+														.form-group
+															label Ngày bắt đầu
+															input.form-control(type='date' placeholder='Ngày bắt đầu' name='startDate')
+													.col-6
+														.form-group
+															label Ngày kết thúc
+															input.form-control(type='date' placeholder='Ngày kết thúc' name='endDate')
+												.row 
+													.col-12
+														.form-group
+															label Tổng số ngày
+															input.form-control(type='text' placeholder='Tổng số ngày' name='totalDay')
+												.row 
+													.col-12
+														.form-group
+															label Mã Khoa
+															input.form-control(type='text' placeholder='Mã khoa' name='departmentID')
+												.row 
+													.col-12
+														.form-group
+															label Số SV tối đa
+															input.form-control(type='text' placeholder='Số SV tối đa' name='maxstudent')
+											.modal-footer
+												button.btn.btn-secondary(type='button' data-dismiss='modal') Đóng lại
+												button.btn.btn-primary(type='submit') Thêm mới
+							
+							#editActivityModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='editActivityModal' aria-hidden='true')
+										.modal-dialog(role='document')
+											.modal-content
+												.modal-header
+													h5.modal-title Chỉnh sửa thông tin Hoạt động
+													button.close(type='button' data-dismiss='modal' aria-label='Close')
+														span(aria-hidden='true') &times;
+												form(action="/activity/activity/edit", method="post")
+													.modal-body
+														.form-group
+															input(type="hidden", name="activityID")                                                            													
+														.form-group
+															label Tên hoạt động
+															input.form-control(type='text', placeholder='Tên Khoa', name='activityName' readonly)
+														.form-group
+															label Ngày bắt đầu
+															input.form-control(type='date', placeholder='Ngày bắt đầu', name='startDate')
+														.form-group
+															label Ngày kết thúc
+															input.form-control(type='date', placeholder='Ngày kết thúc', name='endDate')
+														.form-group
+															label Tổng số ngày
+															input.form-control(type='text', placeholder='Tổng số ngày', name='totalDay')
+														.form-group
+															label Mã Khoa
+															input.form-control(type='text', placeholder='Mã Khoa', name='departmentID')
+														.form-group
+															label Số SV tối đa
+															input.form-control(type='text', placeholder='Số SV tối đa', name='maxstudent')
+														
+													.modal-footer
+														button.btn.btn-secondary(type='button' data-dismiss='modal') Đóng lại
+														button.btn.btn-primary(type='submit') Cập nhật
+
+							#deleteActivityModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='deleteActivityModal' aria-hidden='true')
+								.modal-dialog(role='document')
+									.modal-content.bg-danger
+										.modal-header
+											h5.modal-title Xóa
+											button.close(type='button' data-dismiss='modal' aria-label='Close')
+												span(aria-hidden='true') &times;
+										form(action="/activity/activity/delete", method="post")
+											.modal-body
+												input(type="hidden", name="activityID")
+												p Bạn có chắc chắn muốn xóa hoạt động này không ?
+											.modal-footer
+												button.btn.btn-outline-light(type='button' data-dismiss='modal') Đóng lại
+												button.btn.btn-outline-light(type='submit') Xác nhận
+							#detailActivityModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='detailActivityModal' aria-hidden='true')
+								.modal-dialog(role='document')
+									.modal-content.bg-danger
+										.modal-header
+											h5.modal-title Xem chi tiết
+											button.close(type='button' data-dismiss='modal' aria-label='Close')
+												span(aria-hidden='true') &times;
+										form(action="/activity/activity/detail", method="post")
+											.modal-body
+												input(type="hidden", name="activityID")
+												p Bạn có chắc chắn muốn vào xem hoạt động này không ?
+											.modal-footer
+												button.btn.btn-outline-light(type='button' data-dismiss='modal') Đóng lại
+												button.btn.btn-outline-light(type='submit') Xác nhận
+
+
+
+block script 
+	script(src="/javascripts/activity/activity.js") 
