@@ -3,7 +3,7 @@ let departmentModel = require('../../models/department/department')
 class departmentController {
     async getDepartment(req, res) {
         res.render("department/department", {
-            title: `THÔNG TIN NGƯỜI THÂN`,
+            title: `THÔNG TIN KHOA`,
             departmentList: await departmentModel.getAllDepartment()
         })
     }

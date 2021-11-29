@@ -1,7 +1,7 @@
 let connection = require('../../config')
 
 exports.getAllDepartment = async function() {
-    return connection.awaitQuery(`SELECT * FROM department`)
+    return connection.awaitQuery(`SELECT department.departmentID, departmentName, establishYear, MGR, studentQuanitty, totalSalary, fullName FROM department, teacher WHERE department.MGR = teacher.MSGV`)
 }
 
 exports.editDepartment = async function(department) {

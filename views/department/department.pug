@@ -18,17 +18,25 @@ block content
 							table#tab-student.table.table-bordered.table-striped
 								thead
 									tr
-										th Thao tác
 										th Mã Khoa
 										th Tên Khoa
 										th Năm thành lập
 										th Trưởng Khoa
+										th Tên Trưởng Khoa
 										th Số lượng sinh viên
 										th Tổng lương
+										th Thao tác
 										
 								tbody
 									each department in departmentList 
 										tr
+											td=department.departmentID
+											td=department.departmentName
+											td=department.establishYear
+											td=department.MGR
+											td=department.fullName
+											td=department.studentQuanitty
+											td=department.totalSalary
 											td.text-center
 												button.btn-edit(style="margin-right: 5px; border:none", 
 												data-departmentid = department.departmentID,
@@ -40,12 +48,6 @@ block content
 													i.fas.fa-edit(style="color:blue")
 												button.btn-delete(style="margin-right: 5px; border:none", data-departmentid = department.departmentID)
 													i(style ='color: red').fas.fa-trash 
-											td=department.departmentID
-											td=department.departmentName
-											td=department.establishYear
-											td=department.MGR
-											td=department.studentQuanitty
-											td=department.totalSalary
 
 							#addDepartmentModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='addDepartmentModal' aria-hidden='true')
 								.modal-dialog(role='document')

@@ -6,7 +6,7 @@ $("#tab-student").DataTable({
         url: "https://cdn.datatables.net/plug-ins/1.10.25/i18n/Vietnamese.json",
     },
     columnDefs: [{
-        "targets": 6,
+        "targets": 7,
         "orderable": false
     }]
 
