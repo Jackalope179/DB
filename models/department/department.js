@@ -14,8 +14,7 @@ exports.deleteDepartment = async function(departmentID) {
 
 
 exports.addDepartment = async function(department) {
-    // let lab_score_weight = 10 - (Number(subject.final_score_weight) + Number(subject.exercise_weight));
-    // await connection.awaitQuery(`INSERT INTO subject  VALUES ('${subject.subjectID}','${subject.subjectName}', ${subject.credit}, ${Number(subject.final_score_weight)}, ${Number(subject.exercise_weight)}, ${lab_score_weight})`)
+    
     await connection.awaitQuery(`INSERT INTO department VALUES ('${department.departmentID}','${department.departmentName}','${department.establishYear}','${department.MGR}','${department.studentQuanitty}','${department.totalSalary}')`)
 }
 

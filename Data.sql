@@ -1,129 +1,4 @@
--- phpMyAdmin SQL Dump
--- version 5.1.1
--- https://www.phpmyadmin.net/
---
--- Host: 127.0.0.1
--- Generation Time: Nov 30, 2021 at 05:11 AM
--- Server version: 10.4.21-MariaDB
--- PHP Version: 8.0.12
-
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
-SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-
---
--- Database: `db`
---
-
-DELIMITER $$
---
--- Procedures
---
-CREATE DEFINER=`root`@`localhost` PROCEDURE `addroom` (IN `room` VARCHAR(3), IN `roomTypeName` VARCHAR(255))  BEGIN
-IF(room IN (SELECT roomID FROM classroom))
-THEN
-SIGNAL SQLSTATE '45000'
-SET MESSAGE_TEXT = 'Exist roomID';
-END IF;
- 
-IF(roomTypeName NOT IN (SELECT DISTINCT classroom.roomType FROM classroom))
-THEN
-SIGNAL SQLSTATE '45000'
-SET MESSAGE_TEXT = 'No suitable room type';
-END IF;
- 
-INSERT INTO classroom VALUES(room, roomTypeName);
-END$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `studentGroup` (IN `className` VARCHAR(3))  BEGIN
-	SELECT MSSV  
- 	FROM study
-	WHERE classID = className;
-END$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `studentGroupName` (IN `subjectid` VARCHAR(10), IN `yearinput` INT(5), IN `semesterinput` INT(1))  BEGIN
-    IF yearinput < 0
-    THEN
-        SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'In valid year';
-    END IF;
-   
-    IF subjectid NOT IN ( SELECT subjectID FROM subject)
-    THEN
-        SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Subject does not exist';
-    END IF;
-   
-    IF semesterinput NOT IN (1,2,3)
-    THEN
-        SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'In valid semester';
-    END IF;
-   
-    SELECT study.MSSV, study.finalscore as final, study.exercisescore as exercise, study.labscore as lab
-    FROM study JOIN groupclass
-    WHERE study.subjectID = subjectid and groupclass.year = yearinput and groupclass.semester = semesterinput;
- 
-END$$
-
---
--- Functions
---
-CREATE DEFINER=`root`@`localhost` FUNCTION `K` (`khoa` INT, `timeStudy` INT) RETURNS INT(11) BEGIN
-	DECLARE st INT;
-    
-    SELECT COUNT(*) INTO st FROM  graduatedstudent NATURAL JOIN student 
- 	WHERE graduateYear - Khoa <= timeStudy AND Khoa = khoa;
-	
-    RETURN st;
-
-END$$
-
-CREATE DEFINER=`root`@`localhost` FUNCTION `Rate_Graduate` (`khoa` INT, `timeStudy` INT) RETURNS FLOAT BEGIN
-  DECLARE rate FLOAT(5) DEFAULT 0.0;  
-    DECLARE totalStudent integer DEFAULT 0;
-    DECLARE st integer DEFAULT 0;
- 
- IF(khoa < 1957 OR khoa> YEAR(DATE(NOW()))) THEN
-        SIGNAL SQLSTATE "45000"
-        SET MESSAGE_TEXT = "Khóa không hợp lệ";
-        RETURN -1;
- END IF;
- IF(timeStudy <=0)THEN
-        SIGNAL SQLSTATE "45000"
-        SET MESSAGE_TEXT = "Thời gian học không hợp lệ";
-        RETURN -1;
-    END IF;
- SELECT COUNT(*) INTO st FROM graduatedstudent NATURAL JOIN student 
- WHERE graduateYear - Khoa <= timeStudy AND Khoa = khoa;
- 
-    SELECT COUNT(*) INTO totalStudent FROM student
-    WHERE student.Khoa = khoa;
-   
-    SET rate = totalStudent/st;
- 
-RETURN rate;
-END$$
-
-DELIMITER ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `account`
---
-
-CREATE TABLE `account` (
-  `email` varchar(255) NOT NULL,
-  `mssv` varchar(10) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
+ SET FOREIGN_KEY_CHECKS = 0;
 --
 -- Dumping data for table `account`
 --
@@ -133,21 +8,6 @@ INSERT INTO `account` (`email`, `mssv`) VALUES
 ('Trần.Tú38@hcmut.edu.vn', '198834');
 
 -- --------------------------------------------------------
-
---
--- Table structure for table `address`
---
-
-CREATE TABLE `address` (
-  `MSSV` varchar(8) NOT NULL,
-  `houseaddress` varchar(40) NOT NULL,
-  `street` varchar(40) NOT NULL,
-  `ward` varchar(40) NOT NULL,
-  `district` varchar(40) NOT NULL,
-  `city` varchar(40) NOT NULL,
-  `addressType` varchar(40) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
 --
 -- Dumping data for table `address`
 --
@@ -1158,14 +1018,6 @@ INSERT INTO `address` (`MSSV`, `houseaddress`, `street`, `ward`, `district`, `ci
 
 -- --------------------------------------------------------
 
---
--- Table structure for table `classroom`
---
-
-CREATE TABLE `classroom` (
-  `roomID` varchar(10) NOT NULL,
-  `roomType` varchar(15) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `classroom`
@@ -1677,32 +1529,10 @@ INSERT INTO `classroom` (`roomID`, `roomType`) VALUES
 ('H6_959', 'Lý thuyết'),
 ('H6_963', 'Thực hành');
 
---
--- Triggers `classroom`
---
-DELIMITER $$
-CREATE TRIGGER `storehistory` BEFORE UPDATE ON `classroom` FOR EACH ROW BEGIN
-    DECLARE timest date;
-    SELECT current_timestamp() INTO timest;
-    INSERT INTO history(room, type, updatedate) VALUES( OLD.roomID, OLD.roomType, timest); 
-END
-$$
-DELIMITER ;
+
 
 -- --------------------------------------------------------
 
---
--- Table structure for table `department`
---
-
-CREATE TABLE `department` (
-  `departmentID` varchar(10) NOT NULL,
-  `departmentName` varchar(30) NOT NULL,
-  `establishYear` int(5) DEFAULT NULL,
-  `MGR` varchar(10) NOT NULL,
-  `studentQuanitty` bigint(20) NOT NULL,
-  `totalSalary` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `department`
@@ -1722,19 +1552,6 @@ INSERT INTO `department` (`departmentID`, `departmentName`, `establishYear`, `MG
 ('KHOA_99', 'KHOA HỌC ỨNG DỤNG', 1981, 'GV_427', 4137, 250000000);
 
 -- --------------------------------------------------------
-
---
--- Table structure for table `dependent`
---
-
-CREATE TABLE `dependent` (
-  `MSSV` varchar(8) NOT NULL,
-  `fullName` varchar(30) NOT NULL,
-  `phoneNumber` varchar(10) DEFAULT NULL,
-  `relation` varchar(10) DEFAULT NULL,
-  `job` varchar(10) DEFAULT NULL,
-  `address` varchar(70) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `dependent`
@@ -2749,12 +2566,6 @@ INSERT INTO `dependent` (`MSSV`, `fullName`, `phoneNumber`, `relation`, `job`, `
 -- Table structure for table `graduatedstudent`
 --
 
-CREATE TABLE `graduatedstudent` (
-  `MSSV` varchar(10) NOT NULL,
-  `diplomaType` varchar(15) NOT NULL,
-  `graduateYear` int(5) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
 --
 -- Dumping data for table `graduatedstudent`
 --
@@ -3063,20 +2874,7 @@ INSERT INTO `graduatedstudent` (`MSSV`, `diplomaType`, `graduateYear`) VALUES
 
 -- --------------------------------------------------------
 
---
--- Table structure for table `groupclass`
---
 
-CREATE TABLE `groupclass` (
-  `classID` varchar(3) NOT NULL,
-  `groupID` varchar(1) NOT NULL,
-  `subjectID` varchar(12) NOT NULL,
-  `year` int(5) NOT NULL,
-  `semester` int(1) NOT NULL,
-  `startTime` time DEFAULT NULL,
-  `endTime` time DEFAULT NULL,
-  `MSGV` varchar(10) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `groupclass`
@@ -4124,33 +3922,9 @@ INSERT INTO `groupclass` (`classID`, `groupID`, `subjectID`, `year`, `semester`,
 ('L99', 'D', 'IM6113', 2012, 1, '07:00:28', '10:42:36', 'GV_941'),
 ('L99', 'D', 'SP6416', 2005, 1, '07:00:03', '10:35:04', 'GV_442');
 
---
--- Triggers `groupclass`
---
-DELIMITER $$
-CREATE TRIGGER `checktime` AFTER UPDATE ON `groupclass` FOR EACH ROW BEGIN
-    IF (NEW.startTime > NEW.endTime)
-THEN 
-        SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'start time cant greater than end time';
-END IF;
-
-END
-$$
-DELIMITER ;
 
 -- --------------------------------------------------------
 
---
--- Table structure for table `joinactivity`
---
-
-CREATE TABLE `joinactivity` (
-  `MSSV` varchar(8) NOT NULL,
-  `activityID` varchar(10) NOT NULL,
-  `joinDate` date DEFAULT NULL,
-  `dayReceive` int(2) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `joinactivity`
@@ -7161,20 +6935,6 @@ INSERT INTO `joinactivity` (`MSSV`, `activityID`, `joinDate`, `dayReceive`) VALU
 ('199961', 'UD30625', '2017-05-09', 3);
 
 -- --------------------------------------------------------
-
---
--- Table structure for table `social_activity`
---
-
-CREATE TABLE `social_activity` (
-  `activityID` varchar(10) NOT NULL,
-  `activityName` varchar(30) NOT NULL,
-  `startDate` date DEFAULT NULL,
-  `endDate` date DEFAULT NULL,
-  `totalDay` int(11) DEFAULT NULL,
-  `departmentID` varchar(10) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
 --
 -- Dumping data for table `social_activity`
 --
@@ -8182,48 +7942,16 @@ INSERT INTO `social_activity` (`activityID`, `activityName`, `startDate`, `endDa
 ('XD99490', 'Dallas865', '1970-01-04', '1970-01-08', 1, 'KHOA_93'),
 ('XD99931', 'Hilliard31', '1983-09-03', '1983-09-08', 4, 'KHOA_06');
 
---
--- Triggers `social_activity`
---
-DELIMITER $$
-CREATE TRIGGER `after_insert_social` BEFORE INSERT ON `social_activity` FOR EACH ROW BEGIN
-        IF NEW.startDate > NEW.endDate THEN
-           SIGNAL SQLSTATE '45000'
-		SET MESSAGE_TEXT = 'startDate cant greater than endDate';
-	END IF;
-    END
-$$
-DELIMITER ;
+
 
 -- --------------------------------------------------------
 
---
--- Table structure for table `student`
---
-
-CREATE TABLE `student` (
-  `MSSV` varchar(8) NOT NULL,
-  `school_email` varchar(50) NOT NULL,
-  `fname` varchar(20) DEFAULT NULL,
-  `midname` varchar(20) DEFAULT NULL,
-  `lname` varchar(20) NOT NULL,
-  `phone` varchar(10) DEFAULT NULL,
-  `training_system` varchar(10) NOT NULL,
-  `gender` varchar(1) NOT NULL,
-  `social_day` int(11) DEFAULT NULL,
-  `GPA` float DEFAULT NULL,
-  `personal_email` varchar(40) DEFAULT NULL,
-  `MSGV` varchar(10) NOT NULL,
-  `departmentID` varchar(10) NOT NULL,
-  `TCTL` int(2) DEFAULT NULL,
-  `Khoa` int(5) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `student`
 --
 
-INSERT INTO `student` (`MSSV`, `school_email`, `fname`, `midname`, `lname`, `phone`, `training_system`, `gender`, `social_day`, `GPA`, `personal_email`, `MSGV`, `departmentID`, `TCTL`, `Khoa`) VALUES
+INSERT INTO `student` (`MSSV`, `school_email`, `fname`, `midname`, `lname`, `phone`, `training_system`, `gender`, `social_day`, `GPA`, `personal_email`, `MSGV`, `departmentID`, `TCTL`, `join_school_Year`) VALUES
 ('150067', 'Nguyễn.rung58@hcmut.edu.vn', 'Nguyễn', 'ăn', 'Trung', '679-4498', 'CLC', 'F', 12, 6, 'StephineAndrew33@example.com', 'GV_326', 'KHOA_15', 4, 2017),
 ('150078', 'Võ.hương89@hcmut.edu.vn', 'Võ', 'Huỳnh', 'hương', '240-0464', 'CLC', 'M', 6, 5, 'mlzkbly2849@example.com', 'GV_502', 'KHOA_15', 18, 2020),
 ('150103', 'ần.Hiển15@hcmut.edu.vn', 'ần', 'hanh', 'Hiển', '283-7837', 'Việt Pháp', 'F', 9, 6, 'Croft2@example.com', 'GV_511', 'KHOA_10', 113, 2016),
@@ -8551,7 +8279,7 @@ INSERT INTO `student` (`MSSV`, `school_email`, `fname`, `midname`, `lname`, `pho
 ('166419', 'Trần.òa19@hcmut.edu.vn', 'Trần', 'hanh Hoài', 'òa', '105-4861', 'Đại trà', 'M', 18, 5, NULL, 'GV_251', 'KHOA_93', NULL, 2018),
 ('166471', 'xãu.am09@hcmut.edu.vn', 'xãu', 'Quốc', 'am', NULL, 'Đại trà', 'M', 20, 10, 'Merle.Worthington185@example.com', 'GV_710', 'KHOA_99', 0, 2016),
 ('166508', 'Bùi.Thắm12@hcmut.edu.vn', 'Bùi', 'Quang', 'Thắm', '425-2709', 'CLC', 'M', 14, 3, 'Blue48@example.com', 'GV_801', 'KHOA_15', 77, 2016);
-INSERT INTO `student` (`MSSV`, `school_email`, `fname`, `midname`, `lname`, `phone`, `training_system`, `gender`, `social_day`, `GPA`, `personal_email`, `MSGV`, `departmentID`, `TCTL`, `Khoa`) VALUES
+INSERT INTO `student` (`MSSV`, `school_email`, `fname`, `midname`, `lname`, `phone`, `training_system`, `gender`, `social_day`, `GPA`, `personal_email`, `MSGV`, `departmentID`, `TCTL`, `join_school_Year`) VALUES
 ('166575', 'xã.Hiếu73@hcmut.edu.vn', 'xã', 'Quang', 'Hiếu', '972-9779', 'Đại trà', 'F', 19, 2, 'gbaqe042@example.com', 'GV_755', 'KHOA_15', 18, 2017),
 ('166615', 'Bùi.Đạt73@hcmut.edu.vn', 'Bùi', 'Hoàng', 'Đạt', '216-3101', 'Việt Pháp', 'M', 0, 4, 'Jacks876@nowhere.com', 'GV_596', 'KHOA_15', 55, 2016),
 ('166616', 'Nguyễn.Bảo43@hcmut.edu.vn', 'Nguyễn', 'Hồng', 'Bảo', '495-3304', 'Đại trà', 'F', 7, 8, 'Boswell@nowhere.com', 'GV_718', 'KHOA_16', 116, 2019),
@@ -8881,7 +8609,7 @@ INSERT INTO `student` (`MSSV`, `school_email`, `fname`, `midname`, `lname`, `pho
 ('183020', 'Nguyễn.Cường59@hcmut.edu.vn', 'Nguyễn', 'ĩnh', 'Cường', '295-8523', 'Đại trà', 'F', 15, 9, 'MalcomEdmond@example.com', 'GV_213', 'KHOA_50', 2, 2020),
 ('183057', 'Đặng.Linh77@hcmut.edu.vn', 'Đặng', 'Thanh', 'Linh', '081-1366', 'Đại trà', 'F', 3, 2, 'kryeamqf6@example.com', 'GV_105', 'KHOA_50', 56, 2018),
 ('183061', 'Trần.Dũng27@hcmut.edu.vn', 'Trần', 'Đình', 'Dũng', NULL, 'CLC', 'M', 3, NULL, 'Allison@example.com', 'GV_844', 'KHOA_99', 48, 2021);
-INSERT INTO `student` (`MSSV`, `school_email`, `fname`, `midname`, `lname`, `phone`, `training_system`, `gender`, `social_day`, `GPA`, `personal_email`, `MSGV`, `departmentID`, `TCTL`, `Khoa`) VALUES
+INSERT INTO `student` (`MSSV`, `school_email`, `fname`, `midname`, `lname`, `phone`, `training_system`, `gender`, `social_day`, `GPA`, `personal_email`, `MSGV`, `departmentID`, `TCTL`, `join_school_Year`) VALUES
 ('183064', 'Nguyễn.Liễu49@hcmut.edu.vn', 'Nguyễn', 'ức Huỳnh', 'Liễu', '112-5066', 'Đại trà', 'F', 14, 3, NULL, 'GV_041', 'KHOA_85', NULL, 2018),
 ('183114', 'ê.Tiên26@hcmut.edu.vn', 'ê', 'Thành', 'Tiên', '922-2093', 'Đại trà', 'M', 14, 2, 'Adrian_U_Marin82@example.com', 'GV_554', 'KHOA_10', 0, 2015),
 ('183145', 'Nguyễn.Thùy43@hcmut.edu.vn', 'Nguyễn', 'Thị Thanh', 'Thùy', '069-7924', 'Việt Pháp', 'M', 9, 4, 'AhmedS@example.com', 'GV_310', 'KHOA_16', 71, 2021),
@@ -9209,7 +8937,7 @@ INSERT INTO `student` (`MSSV`, `school_email`, `fname`, `midname`, `lname`, `pho
 ('198946', 'uyễn.ỹ95@hcmut.edu.vn', 'Nuyễn', 'uy', 'ỹ', '984-6294', 'Đại trà', 'M', 9, 6, 'Aletha_R.Ybarra259@nowhere.com', 'GV_633', 'KHOA_16', 52, 2021),
 ('198992', 'Nguyễn.Trí50@hcmut.edu.vn', 'Nguyễn', 'Văn', 'Trí', '513-7820', 'Việt Pháp', 'M', 8, 3, 'xpacxnog_acvctc@nowhere.com', 'GV_801', 'KHOA_03', 123, 2020),
 ('199079', 'àng.âm93@hcmut.edu.vn', 'àng', 'Anh', 'âm', '352-9455', 'CLC', 'M', 10, 4, 'DwainGarrison@nowhere.com', 'GV_718', 'KHOA_03', 35, 2015);
-INSERT INTO `student` (`MSSV`, `school_email`, `fname`, `midname`, `lname`, `phone`, `training_system`, `gender`, `social_day`, `GPA`, `personal_email`, `MSGV`, `departmentID`, `TCTL`, `Khoa`) VALUES
+INSERT INTO `student` (`MSSV`, `school_email`, `fname`, `midname`, `lname`, `phone`, `training_system`, `gender`, `social_day`, `GPA`, `personal_email`, `MSGV`, `departmentID`, `TCTL`, `join_school_Year`) VALUES
 ('199211', 'uyễn.Châu48@hcmut.edu.vn', 'Nuyễn', 'Văn', 'Châu', '062-9048', 'Đại trà', 'M', 16, 8, 'Milan.Adcock857@nowhere.com', 'GV_236', 'KHOA_85', 74, 2021),
 ('199261', 'Cao.anh90@hcmut.edu.vn', 'Cao', 'Duy', 'anh', '976-9756', 'Đại trà', 'M', 3, 7, 'Clifford@nowhere.com', 'GV_701', 'KHOA_15', 66, 2020),
 ('199282', 'Nguyễn.Trinh47@hcmut.edu.vn', 'Nguyễn', 'hắc', 'Trinh', '685-5366', 'Đại trà', 'M', 16, 6, 'Mcbee@nowhere.com', 'GV_711', 'KHOA_16', 9, 2021),
@@ -9229,33 +8957,10 @@ INSERT INTO `student` (`MSSV`, `school_email`, `fname`, `midname`, `lname`, `pho
 ('199917', 'Nguyễn.Thắng95@hcmut.edu.vn', 'Nguyễn', 'Thị Ngọc', 'Thắng', '251-1607', 'Việt Pháp', 'F', 11, 7, 'uqpa122@example.com', 'GV_878', 'KHOA_99', 96, 2018),
 ('199961', 'Trần.Khanh39@hcmut.edu.vn', 'Trần', 'hanh', 'Khanh', '240-0020', 'Đại trà', 'M', 10, 6, NULL, 'GV_339', 'KHOA_50', NULL, 2017);
 
---
--- Triggers `student`
---
-DELIMITER $$
-CREATE TRIGGER `before_delete_student` BEFORE DELETE ON `student` FOR EACH ROW BEGIN
-	DELETE FROM dependent WHERE dependent.MSSV = OLD.MSSV;
-END
-$$
-DELIMITER ;
+
 
 -- --------------------------------------------------------
 
---
--- Table structure for table `study`
---
-
-CREATE TABLE `study` (
-  `MSSV` varchar(8) NOT NULL,
-  `subjectID` varchar(12) NOT NULL,
-  `classID` varchar(3) NOT NULL,
-  `groupID` varchar(1) NOT NULL,
-  `roomID` varchar(10) NOT NULL,
-  `finalscore` float DEFAULT NULL,
-  `exercisescore` float DEFAULT NULL,
-  `labscore` float DEFAULT NULL,
-  `total_score` float DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `study`
@@ -14187,19 +13892,6 @@ INSERT INTO `study` (`MSSV`, `subjectID`, `classID`, `groupID`, `roomID`, `final
 -- --------------------------------------------------------
 
 --
--- Table structure for table `subject`
---
-
-CREATE TABLE `subject` (
-  `subjectID` varchar(10) NOT NULL,
-  `subjectName` varchar(30) NOT NULL,
-  `credit` int(11) NOT NULL,
-  `final_score_weight` float NOT NULL,
-  `exercise_weight` float NOT NULL,
-  `lab_score_weight` float DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
 -- Dumping data for table `subject`
 --
 
@@ -14307,22 +13999,6 @@ INSERT INTO `subject` (`subjectID`, `subjectName`, `credit`, `final_score_weight
 
 -- --------------------------------------------------------
 
---
--- Table structure for table `teacher`
---
-
-CREATE TABLE `teacher` (
-  `MSGV` varchar(10) NOT NULL,
-  `fullName` varchar(30) NOT NULL,
-  `phoneNumber` varchar(10) DEFAULT NULL,
-  `position` varchar(10) DEFAULT NULL,
-  `join_school_Year` date NOT NULL,
-  `departmentID` varchar(10) NOT NULL,
-  `schoolEmail` varchar(30) NOT NULL,
-  `personalEmail` varchar(30) DEFAULT NULL,
-  `address` varchar(30) DEFAULT NULL,
-  `salary` int(15) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `teacher`
@@ -14531,39 +14207,6 @@ INSERT INTO `teacher` (`MSGV`, `fullName`, `phoneNumber`, `position`, `join_scho
 ('GV_976', 'Nguyễn Minh Hoàng', '0012004383', 'Giảng viên', '2001-03-10', 'KHOA_06', 'Nguyễn Minh Hoàng@hcmut.edu.vn', 'Lois.Counts@nowhere.com', 'Tỉnh Thanh Hóa', 11805119),
 ('GV_980', 'Nguyễn Văn An', '0970129920', 'Giảng viên', '1955-11-29', 'KHOA_93', 'Nguyễn Văn An@hcmut.edu.vn', 'Linnea_Mackie13@example.com', 'Tỉnh Bắc Ninh', 54697035),
 ('GV_981', 'Trần Quốc Tuaán', '0786238747', 'Giảng viên', '1961-06-12', 'KHOA_50', 'Trần Quốc Tuaán@hcmut.edu.vn', NULL, 'Tỉnh Bình Dương', 10486392);
-
---
--- Triggers `teacher`
---
-DELIMITER $$
-CREATE TRIGGER `AfterAddTeacher` AFTER INSERT ON `teacher` FOR EACH ROW BEGIN
-		UPDATE department
-		SET department.totalSalary = department.totalSalary + NEW.salary
-		WHERE departmentID = new.departmentID;
-END
-$$
-DELIMITER ;
-DELIMITER $$
-CREATE TRIGGER `AfterUpdateSalary` AFTER UPDATE ON `teacher` FOR EACH ROW BEGIN
-  IF (NEW.salary < OLD.salary) THEN
-		UPDATE teacher
-		SET NEW.salary = OLD.salary
-		WHERE NEW.MSGV = NEW.MSGV;
-	END IF;
-END
-$$
-DELIMITER ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `undergraduate`
---
-
-CREATE TABLE `undergraduate` (
-  `MSSV` varchar(8) NOT NULL,
-  `studentStatus` varchar(10) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `undergraduate`
@@ -15572,43 +15215,9 @@ INSERT INTO `undergraduate` (`MSSV`, `studentStatus`) VALUES
 ('199917', 'Bảo lưu'),
 ('199961', 'Bảo Lưu');
 
---
--- Triggers `undergraduate`
---
-DELIMITER $$
-CREATE TRIGGER `updateSV` AFTER UPDATE ON `undergraduate` FOR EACH ROW BEGIN
-
-    DECLARE id varchar(30);
-    
-    SELECT departmentID INTO id
-    FROM undergraduate join student on undergraduate.MSSV = student.MSSV
-    WHERE undergraduate.MSSV = NEW.MSSV;
-    
-    IF OLD.studentStatus LIKE '%Đang học%'
-    THEN
-        IF NEW.studentStatus LIKE '%Bảo lưu%' or NEW.studentStatus LIKE '%Nghỉ học%'
-        THEN
-        UPDATE department
-        SET department.studentQuanitty = department.studentQuanitty - 1
-        WHERE department.departmentID = id;
-        END IF;
-    END IF;
-END
-$$
-DELIMITER ;
 
 -- --------------------------------------------------------
 
---
--- Table structure for table `week`
---
-
-CREATE TABLE `week` (
-  `classID` varchar(3) NOT NULL,
-  `groupID` varchar(1) NOT NULL,
-  `subjectID` varchar(12) NOT NULL,
-  `week` int(5) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `week`
@@ -18550,191 +18159,5 @@ INSERT INTO `week` (`classID`, `groupID`, `subjectID`, `week`) VALUES
 ('L99', 'D', 'SP0545', 9),
 ('L99', 'D', 'SP3755', 14);
 
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `address`
---
-ALTER TABLE `address`
-  ADD PRIMARY KEY (`MSSV`,`houseaddress`,`street`,`ward`,`district`,`city`,`addressType`);
-
---
--- Indexes for table `classroom`
---
-ALTER TABLE `classroom`
-  ADD PRIMARY KEY (`roomID`);
-
---
--- Indexes for table `department`
---
-ALTER TABLE `department`
-  ADD PRIMARY KEY (`departmentID`),
-  ADD UNIQUE KEY `departmentName` (`departmentName`),
-  ADD KEY `fk_dep_teacher` (`MGR`);
-
---
--- Indexes for table `dependent`
---
-ALTER TABLE `dependent`
-  ADD PRIMARY KEY (`MSSV`,`fullName`);
-
---
--- Indexes for table `graduatedstudent`
---
-ALTER TABLE `graduatedstudent`
-  ADD PRIMARY KEY (`MSSV`);
-
---
--- Indexes for table `groupclass`
---
-ALTER TABLE `groupclass`
-  ADD PRIMARY KEY (`classID`,`groupID`,`subjectID`),
-  ADD KEY `MSGV` (`MSGV`),
-  ADD KEY `subject_groupclss_fk` (`subjectID`);
-
---
--- Indexes for table `joinactivity`
---
-ALTER TABLE `joinactivity`
-  ADD PRIMARY KEY (`MSSV`,`activityID`),
-  ADD KEY `activityID_fr` (`activityID`);
-
---
--- Indexes for table `social_activity`
---
-ALTER TABLE `social_activity`
-  ADD PRIMARY KEY (`activityID`),
-  ADD KEY `social_activity` (`departmentID`);
-
---
--- Indexes for table `student`
---
-ALTER TABLE `student`
-  ADD PRIMARY KEY (`MSSV`),
-  ADD KEY `fk_teacher_student` (`MSGV`),
-  ADD KEY `fk_department_student` (`departmentID`);
-
---
--- Indexes for table `study`
---
-ALTER TABLE `study`
-  ADD PRIMARY KEY (`MSSV`,`subjectID`,`classID`,`groupID`,`roomID`),
-  ADD KEY `subjectID` (`subjectID`),
-  ADD KEY `classID` (`classID`,`groupID`),
-  ADD KEY `roomID` (`roomID`);
-
---
--- Indexes for table `subject`
---
-ALTER TABLE `subject`
-  ADD PRIMARY KEY (`subjectID`);
-
---
--- Indexes for table `teacher`
---
-ALTER TABLE `teacher`
-  ADD PRIMARY KEY (`MSGV`),
-  ADD KEY `teacher` (`departmentID`);
-
---
--- Indexes for table `undergraduate`
---
-ALTER TABLE `undergraduate`
-  ADD PRIMARY KEY (`MSSV`);
-
---
--- Indexes for table `week`
---
-ALTER TABLE `week`
-  ADD PRIMARY KEY (`classID`,`groupID`,`subjectID`,`week`),
-  ADD KEY `week_subject` (`subjectID`);
-
---
--- Constraints for dumped tables
---
-
---
--- Constraints for table `address`
---
-ALTER TABLE `address`
-  ADD CONSTRAINT `fk_student_address` FOREIGN KEY (`MSSV`) REFERENCES `student` (`MSSV`);
-
---
--- Constraints for table `department`
---
-ALTER TABLE `department`
-  ADD CONSTRAINT `fk_dep_teacher` FOREIGN KEY (`MGR`) REFERENCES `teacher` (`MSGV`);
-
---
--- Constraints for table `dependent`
---
-ALTER TABLE `dependent`
-  ADD CONSTRAINT `dependent_ibfk_1` FOREIGN KEY (`MSSV`) REFERENCES `student` (`MSSV`);
-
---
--- Constraints for table `graduatedstudent`
---
-ALTER TABLE `graduatedstudent`
-  ADD CONSTRAINT `graduatedstudent_ibfk_1` FOREIGN KEY (`MSSV`) REFERENCES `student` (`MSSV`);
-
---
--- Constraints for table `groupclass`
---
-ALTER TABLE `groupclass`
-  ADD CONSTRAINT `groupclass_ibfk_1` FOREIGN KEY (`MSGV`) REFERENCES `teacher` (`MSGV`),
-  ADD CONSTRAINT `subject_groupclss_fk` FOREIGN KEY (`subjectID`) REFERENCES `subject` (`subjectID`) ON DELETE CASCADE;
-
---
--- Constraints for table `joinactivity`
---
-ALTER TABLE `joinactivity`
-  ADD CONSTRAINT `activityID_fr` FOREIGN KEY (`activityID`) REFERENCES `social_activity` (`activityID`),
-  ADD CONSTRAINT `joinactivity_ibfk_1` FOREIGN KEY (`MSSV`) REFERENCES `student` (`MSSV`);
-
---
--- Constraints for table `social_activity`
---
-ALTER TABLE `social_activity`
-  ADD CONSTRAINT `social_activity` FOREIGN KEY (`departmentID`) REFERENCES `department` (`departmentID`);
-
---
--- Constraints for table `student`
---
-ALTER TABLE `student`
-  ADD CONSTRAINT `fk_department_student` FOREIGN KEY (`departmentID`) REFERENCES `department` (`departmentID`),
-  ADD CONSTRAINT `fk_teacher_student` FOREIGN KEY (`MSGV`) REFERENCES `teacher` (`MSGV`);
-
---
--- Constraints for table `study`
---
-ALTER TABLE `study`
-  ADD CONSTRAINT `study_ibfk_1` FOREIGN KEY (`MSSV`) REFERENCES `undergraduate` (`MSSV`),
-  ADD CONSTRAINT `study_ibfk_2` FOREIGN KEY (`subjectID`) REFERENCES `subject` (`subjectID`) ON DELETE CASCADE,
-  ADD CONSTRAINT `study_ibfk_3` FOREIGN KEY (`classID`,`groupID`) REFERENCES `groupclass` (`classID`, `groupID`),
-  ADD CONSTRAINT `study_ibfk_4` FOREIGN KEY (`roomID`) REFERENCES `classroom` (`roomID`);
-
---
--- Constraints for table `teacher`
---
-ALTER TABLE `teacher`
-  ADD CONSTRAINT `teacher` FOREIGN KEY (`departmentID`) REFERENCES `department` (`departmentID`);
-
---
--- Constraints for table `undergraduate`
---
-ALTER TABLE `undergraduate`
-  ADD CONSTRAINT `undergraduate_ibfk_1` FOREIGN KEY (`MSSV`) REFERENCES `student` (`MSSV`);
-
---
--- Constraints for table `week`
---
-ALTER TABLE `week`
-  ADD CONSTRAINT `group_class_fk` FOREIGN KEY (`classID`,`groupID`) REFERENCES `groupclass` (`classID`, `groupID`),
-  ADD CONSTRAINT `week_groupclass_fk` FOREIGN KEY (`subjectID`) REFERENCES `subject` (`subjectID`) ON DELETE CASCADE;
-COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+ SET FOREIGN_KEY_CHECKS = 1;
+ UPDATE social_activity SET social_activity.maxstudent = 5;
